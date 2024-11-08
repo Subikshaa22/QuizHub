@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.time.Instant;
-import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -26,13 +24,6 @@ class User {
         this.made = new ArrayList<>();
         this.quizMgr = quizMgr;
     }
-
-    // Native methods (to be implemented in C++)
-    public native boolean login(String username, String password); // Native login
-    public native void register(); // Native registration
-    public native void viewProfile(); // Native profile view
-    public native void addAttemptedQuiz(Quiz quiz); // Native method to add attempted quiz
-    public native void addMadeQuiz(String quizName); // Native method to add created quiz
 
     // Getters and setters
 
