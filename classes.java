@@ -2,11 +2,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-public class classes {
-    
-}
-
 class User {
     private String username;
     private String email;      // Add an email field
@@ -82,10 +77,6 @@ class User {
                 '}';
     }
 
-    // Load the C++ library at runtime
-    static {
-        System.loadLibrary("UserJNI"); // Assuming your C++ compiled library is named "UserJNI"
-    }
 }
 
 class quizManager {
@@ -122,15 +113,15 @@ class quizManager {
                 .collect(Collectors.toList());
     }
 
-    public native void attemptQuiz();
+    /*public void attemptQuiz();
 
-    public native void createQuiz(); 
+    public void createQuiz(); 
 
-    public native void displayTopics();
+    public void displayTopics();
 
-    public native void displayQuizzes(); //displaying quizzes with the same topic
+    public void displayQuizzes(); //displaying quizzes with the same topic
 
-    public native void generateQuizzes();
+    public void generateQuizzes();*/
 
 }
 
@@ -329,84 +320,4 @@ class AttemptedQuiz extends Quiz {
     public void setTime(int time) {
         this.time = time;
     }
-}
-
-
-abstract class Question {
-
-    protected String questionText;          // The question text
-    protected char correctAnswer;           // Correct answer as 'a', 'b', 'c', 'd' for MCQ or 'T'/'F' for True/False
-
-    // Constructor
-    public Question(String questionText, char correctAnswer) {
-        this.questionText = questionText;
-        this.correctAnswer = correctAnswer;
-    }
-
-    // Native method declarations (to be implemented in C++)
-    public abstract void displayQuestion();
-    public abstract boolean checkAnswer(char answer);
-
-    // Getters and setters
-    public String getQuestionText() {
-        return questionText;
-    }
-
-    public void setQuestionText(String questionText) {
-        this.questionText = questionText;
-    }
-
-    public char getCorrectAnswer() {
-        return correctAnswer;
-    }
-
-    public void setCorrectAnswer(char correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
-}
-
-// Concrete class for MCQ questions (including True/False)
-class MCQQuestion extends Question {
-    private List<String> options;  // List of options for the question
-
-    public MCQQuestion(String questionText, List<String> options, char correctAnswer) {
-        super(questionText, correctAnswer);
-        this.options = options;
-    }
-
-    public List<String> getOptions() {
-        return options;
-    }
-
-    public void setOptions(List<String> options) {
-        this.options = options;
-    }
-
-    // Native method declarations (to be implemented in C++)
-    @Override
-    public native void displayQuestion();  // displays both ques and options
-    @Override
-    public native boolean checkAnswer(char answer);
-}
-
-
-class QuizStorage {
-    private String filePath;
-    private String name;
-
-    // Constructor
-    public QuizStorage(String filePath, String name) 
-    {
-        this.filePath = filePath;
-        this.name = name;
-    }
-
-    // Method to save the quiz to a file
-    public native void saveQuiz(String content);
-
-    // Method to load quiz details from a file
-    public native String loadQuiz();
-    // Method to list all quizzes in a specified directory
-    public native void listOfAllQuizzes();
-
 }

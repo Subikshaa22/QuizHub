@@ -7,7 +7,7 @@ public class Question {
     private int marksForCorrect;
     private int marksForWrong;
     private double averageScore;
-
+ 
     // Constructor for Question class
     public Question(String text, Map<Character, String> options, Character correctOption, int marksForCorrect, int marksForWrong, double averageScore) {
         this.text = text;

@@ -1,12 +1,9 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 class ProfileHistory {
     private User user;  // User whose history we are tracking
     private Scanner scanner = new Scanner(System.in);  
+    private AttemptQuiz attemptQuiz;
 
     public ProfileHistory(User user) {
         this.user = user;
@@ -118,11 +115,12 @@ class ProfileHistory {
 
     // Review a selected quiz (for created quizzes)
     private void reviewCreatedQuiz(Quiz quiz) {
+        
         List<Question> questions = quiz.getQuestions(); 
         int index = 0;
         while (index >= 0 && index < questions.size()) {
-            Question currentQuestion = questions.get(index);
-            currentQuestion.displayQuestion();
+
+            attemptQuiz.displayQuestion(index);
 
             String action = scanner.nextLine();
 
@@ -181,11 +179,12 @@ class ProfileHistory {
         List<Question> questions = quiz.getQuestions();
         List<Character> userAnswers = quiz.getChosenOptions();
 
-        for (int i = 0; i < questions.size(); i++) {
+        for (int i = 0; i < questions.size(); i++) 
+        {
             Question question = questions.get(i);
-            char userAnswer = userAnswers.get(i);
+            Character userAnswer = userAnswers.get(i);
 
-            if (userAnswer != question.getCorrectAnswer() && userAnswer != ' ') {
+            if (!userAnswer.equals(question.getCorrectOption())) {
                 incorrectQuestions.add(question);
             }
         }
@@ -245,7 +244,7 @@ class ProfileHistory {
 
     // Display question options
     private void displayQuestionOptions(Question question, String filterOption) {
-        System.out.println("Question: " + question.getQuestionText());
+        System.out.println("Question: " + question.getText());
 
         if (filterOption.equals("incorrect") || filterOption.equals("unattempted")) {
             System.out.println("Options: [show answer] [next] [previous] [end review] [filter]");
@@ -256,7 +255,7 @@ class ProfileHistory {
 
     // Show the answer
     private void showAnswer(Question question, AttemptedQuiz quiz, String filterOption) {
-        System.out.println("Correct Answer: " + question.getCorrectAnswer());
+        System.out.println("Correct Answer: " + question.getCorrectOption());
         if (!filterOption.equals("unattempted")) {
             System.out.println("Your Answer: " + getUserAnswer(quiz, question));
         }

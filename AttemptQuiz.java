@@ -25,6 +25,7 @@ public class AttemptQuiz {
         Scanner scanner = new Scanner(System.in);
         x = scanner.nextLine();
         
+        
         return x;
     }
 
@@ -69,13 +70,14 @@ public class AttemptQuiz {
                 }
 
                 String text = values[0].trim();
-                Map<String, String> options = new HashMap<>();
-                options.put("a", values[1].trim());
-                options.put("b", values[2].trim());
-                options.put("c", values[3].trim());
-                options.put("d", values[4].trim());
+                Map<Character, String> options = new HashMap<>();
+                options.put('a', values[1].trim());
+                options.put('b', values[2].trim());
+                options.put('c', values[3].trim());
+                options.put('d', values[4].trim());
 
-                String correctOption = values[5].trim();
+                // Retrieve correctOption as a Character
+                Character correctOption = values[5].trim().charAt(0);
                 int marksForCorrect = 0, marksForWrong = 0;
                 double averageScore = 0.0;
 
@@ -101,6 +103,21 @@ public class AttemptQuiz {
             System.out.println("Questions loaded successfully.");
         }
     }
+    
+    public void displayQuestion(int questionIndex) {
+        if (questionIndex < 0 || questionIndex >= questions.size()) {
+            System.out.println("Invalid question index.");
+            return;
+        }
+        
+        Question currentQuestion = questions.get(questionIndex);
+        System.out.println("Question " + (questionIndex + 1) + ": " + currentQuestion.getText());
+        System.out.println("Options:");
+        for (Map.Entry<Character, String> entry : currentQuestion.getOptions().entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        System.out.println("Choose an option (a, b, c, d), 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
+    }
 
     // Start the quiz
     public void startQuiz() {
@@ -119,9 +136,8 @@ public class AttemptQuiz {
         }, timeLimit * 1000);
 
         while (!quizSubmitted) {
-            Question currentQuestion = questions.get(currentQuestionIndex);
-            currentQuestion.displayQuestion();
-
+            
+            displayQuestion(currentQuestionIndex);
             System.out.println("Enter your choice (a, b, c, d), 'n' for next, 'p' for previous, 's' to submit, or question number to jump:");
             String input = scanner.nextLine().trim().toLowerCase();
 
@@ -150,7 +166,7 @@ public class AttemptQuiz {
         }
 
         timer.cancel();
-        scanner.close();
+        
     }
 
     // Main function to select topic, quiz, and start the quiz
@@ -161,6 +177,7 @@ public class AttemptQuiz {
         String topicID = displayTopics();
         if (topicID.equalsIgnoreCase("BACK")) {
             System.out.println("Returning to main menu...");
+            
             return;
         }
 
@@ -185,42 +202,6 @@ public class AttemptQuiz {
         } else {
             System.out.println("No quizzes found for the selected topic.");
         }
-
-        scanner.close();
     }
 }
 
-// Updated Question class
-class Question {
-    private String text;
-    private Map<String, String> options;
-    private String correctOption;
-    private int marksForCorrect;
-    private int marksForWrong;
-    private double averageScore;
-
-    public Question(String text, Map<String, String> options, String correctOption, int marksForCorrect, int marksForWrong, double averageScore) {
-        this.text = text;
-        this.options = options;
-        this.correctOption = correctOption;
-        this.marksForCorrect = marksForCorrect;
-        this.marksForWrong = marksForWrong;
-        this.averageScore = averageScore;
-    }
-
-    // Display question and options
-    public void displayQuestion() {
-        System.out.println("Question: " + text);
-        for (Map.Entry<String, String> entry : options.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
-    }
-
-    // Getters
-    public String getText() { return text; }
-    public Map<String, String> getOptions() { return options; }
-    public String getCorrectOption() { return correctOption; }
-    public int getMarksForCorrect() { return marksForCorrect; }
-    public int getMarksForWrong() { return marksForWrong; }
-    public double getAverageScore() { return averageScore; }
-}

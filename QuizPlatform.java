@@ -1,6 +1,12 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class QuizPlatform {
+    private static final String USERS_FILE = "users.csv";
     private static List<User> users = new ArrayList<>();  // List to store registered users
     private static User currentUser;  // Variable to keep track of the logged-in user
 
@@ -20,6 +26,35 @@ public class QuizPlatform {
                 case 2 -> signUp(scanner);
                 default -> System.out.println("Invalid choice. Please try again.");
             }
+        }
+    }
+
+    private static void loadUsers() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userData = line.split(",");
+                if (userData.length == 3) {
+                    String username = userData[0];
+                    String email = userData[1];
+                    String password = userData[2];
+                    users.add(new User(username, email, password, new quizManager(new ArrayList<>())));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading users from file: " + e.getMessage());
+ 
+        }
+    }
+
+    private static void saveUsers() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(USERS_FILE))) {
+            for (User user : users) {
+                writer.println(user.getUsername() + "," + user.getEmail() + "," + user.getPassword());
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving users to file: " + e.getMessage());
+        
         }
     }
 
@@ -52,6 +87,7 @@ public class QuizPlatform {
         String email = scanner.nextLine();
         System.out.print("Create a password: ");
         String password = scanner.nextLine();
+        
 
         if (users.stream().anyMatch(u -> u.getUsername().equals(username))) {
             System.out.println("Username already exists. Try again.");
@@ -75,19 +111,25 @@ public class QuizPlatform {
             System.out.println("2. Continue Learning");
             System.out.println("3. Log Out");
             System.out.println("4. Delete Account");
+    
             System.out.print("Choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
-
-            switch (choice) {
-                case 1 -> viewProfileHistory();
-                case 2 -> continueLearning();
-                case 3 -> logOut();
-                case 4 -> deleteAccount();
-                default -> System.out.println("Invalid choice. Please try again.");
+            String input = scanner.nextLine();  // Read the whole line to handle invalid input better
+            try {
+                int choice = Integer.parseInt(input);  // Try to parse the input to an integer
+    
+                switch (choice) {
+                    case 1 -> viewProfileHistory();
+                    case 2 -> continueLearning();
+                    case 3 -> logOut();
+                    case 4 -> deleteAccount();
+                    default -> System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
             }
         }
     }
+    
 
     private static void viewProfileHistory() {
         ProfileHistory profileHistory = new ProfileHistory(currentUser);
@@ -98,21 +140,22 @@ public class QuizPlatform {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Accessing Continue Learning...");
+        System.out.println("1. Attempt Quiz");
+        System.out.print("Choice: ");
         // Here you can integrate the `quizManager` or any other class functionality for quiz learning
 
         int choice2 = scanner.nextInt();
         scanner.nextLine();
 
         AttemptQuiz attemptQuiz = new AttemptQuiz();
-        MakeQuiz makeQuiz = new MakeQuiz();
+        //MakeQuiz makeQuiz = new MakeQuiz();
 
         switch(choice2) {
-            case 1 -> makeQuiz.main();
+            //case 1 -> makeQuiz.main();
             case 2 -> attemptQuiz.main();
             // case 3 -> GenerateQuiz();
             default -> System.out.println("Invalid choice. Please try again.");
         }
-
     }
 
     private static void logOut() {
