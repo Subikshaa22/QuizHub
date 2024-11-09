@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Date;
 
 public class AttemptQuiz {
 
@@ -164,9 +167,30 @@ public class AttemptQuiz {
                 }
             }
         }
+        QuizPlatform quizPlatform = new QuizPlatform();
+        String email = quizPlatform.currentUser.getEmail();
+        saveQuizResults(email);        
+    }
 
-        timer.cancel();
-        
+    public void saveQuizResults(String userEmail) {
+        String userFile = userEmail + "_quiz_results.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
+            writer.write("Quiz Attempted: " + new Date() + "\n");
+            for (int i = 0; i < questions.size(); i++) {
+                Question question = questions.get(i);
+                String chosenOption = chosenOptions.get(i);
+                boolean isCorrect = question.getCorrectOption().toString().equals(chosenOption);
+                int score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
+                writer.write("Question: " + question.getText() + "\n");
+                writer.write("Options: " + question.getOptions() + "\n");
+                writer.write("Chosen Option: " + chosenOption + ", Correct Option: " + question.getCorrectOption() + "\n");
+                writer.write("Score: " + score + "\n");
+            }
+            writer.write("Time Taken: " + timeLimit + " seconds\n\n");
+            System.out.println("Quiz results saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
     }
 
     // Main function to select topic, quiz, and start the quiz
@@ -177,7 +201,6 @@ public class AttemptQuiz {
         String topicID = displayTopics();
         if (topicID.equalsIgnoreCase("BACK")) {
             System.out.println("Returning to main menu...");
-            
             return;
         }
 
@@ -202,6 +225,10 @@ public class AttemptQuiz {
         } else {
             System.out.println("No quizzes found for the selected topic.");
         }
+    }
+    public static void main(String[] args) {
+        AttemptQuiz attemptQuiz = new AttemptQuiz();
+        attemptQuiz.main();
     }
 }
 

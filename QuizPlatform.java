@@ -8,9 +8,12 @@ import java.util.*;
 public class QuizPlatform {
     private static final String USERS_FILE = "users.csv";
     private static List<User> users = new ArrayList<>();  // List to store registered users
-    private static User currentUser;  // Variable to keep track of the logged-in user
+    public static User currentUser;  // Variable to keep track of the logged-in user
 
     public static void main(String[] args) {
+
+        loadUsers();
+
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Hi, welcome to QuizMaster!");
@@ -71,6 +74,7 @@ public class QuizPlatform {
         if (user.isPresent()) {
             currentUser = user.get();
             System.out.println("Hi " + currentUser.getUsername() + "!");
+
             showMainMenu(scanner);
         } else {
             System.out.println("Incorrect username/email or password. Try again.");
@@ -101,6 +105,7 @@ public class QuizPlatform {
 
         User newUser = new User(username, email, password, quizMgr);
         users.add(newUser);
+        saveUsers();
         System.out.println("User registered successfully! You can now sign in.");
     }
 
@@ -167,6 +172,7 @@ public class QuizPlatform {
         System.out.println("Deleting account for " + currentUser.getUsername());
         users.remove(currentUser);  // Remove user from the list
         currentUser = null;  // Clear current user
+        saveUsers();
         System.out.println("Account deleted successfully.");
     }
 }
