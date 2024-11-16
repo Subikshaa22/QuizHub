@@ -6,7 +6,6 @@ public class Question {
     private Character correctOption;
     private int marksForCorrect;
     private int marksForWrong;
-    private double averageScore;
 
     public Question() {
         // initialize default values here
@@ -16,13 +15,12 @@ public class Question {
 
     // Constructor for Question class
     public Question(String text, Map<Character, String> options, Character correctOption, int marksForCorrect,
-            int marksForWrong, double averageScore) {
+            int marksForWrong) {
         this.text = text;
         this.options = options;
         this.correctOption = correctOption;
         this.marksForCorrect = marksForCorrect;
         this.marksForWrong = marksForWrong;
-        this.averageScore = averageScore;
     }
 
     // Getters for question attributes
@@ -46,9 +44,6 @@ public class Question {
         return marksForWrong;
     }
 
-    public double getAverageScore() {
-        return averageScore;
-    }
 
     // setters
     public void setQuestionText(String questionText) {

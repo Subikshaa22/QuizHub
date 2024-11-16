@@ -4,7 +4,7 @@ class User {
     private String username;
     private String email;      // Add an email field
     private String password;
-    private List<Quiz> attempted;  // List of quizzes attempted by the user
+    private List<AttemptQuiz> attempted;  // List of quizzes attempted by the user
     private List<String> made;     // List of quiz names created by the user
     private quizManager quizMgr;
 
@@ -48,11 +48,11 @@ class User {
         this.password = password;
     }
 
-    public List<Quiz> getAttempted() {
+    public List<AttemptQuiz> getAttempted() {
         return attempted;
     }
 
-    public void setAttempted(List<Quiz> attempted) {
+    public void setAttempted(List<AttemptQuiz> attempted) {
         this.attempted = attempted;
     }
 
