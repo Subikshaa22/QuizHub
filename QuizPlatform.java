@@ -168,10 +168,10 @@ public class QuizPlatform {
         scanner.nextLine();
 
         AttemptedQuiz attemptQuiz = new AttemptedQuiz();
-        //MakeQuiz makeQuiz = new MakeQuiz();
+        MakeQuiz makeQuiz = new MakeQuiz();
 
         switch(choice2) {
-            case 1 : MakeQuiz.main();
+            case 1 : makeQuiz.main(new String[0]);
                      break;
             case 2 : attemptQuiz.main();
                      break;
