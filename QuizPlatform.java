@@ -25,9 +25,14 @@ public class QuizPlatform {
             scanner.nextLine();  // Consume newline
 
             switch (choice) {
-                case 1 -> signIn(scanner);
-                case 2 -> signUp(scanner);
-                default -> System.out.println("Invalid choice. Please try again.");
+                case 1 :
+                    signIn(scanner);
+                    break;
+                case 2 :
+                    signUp(scanner);
+                    break;
+                default :
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
     }
@@ -123,11 +128,20 @@ public class QuizPlatform {
                 int choice = Integer.parseInt(input);  // Try to parse the input to an integer
     
                 switch (choice) {
-                    case 1 -> viewProfileHistory();
-                    case 2 -> continueLearning();
-                    case 3 -> logOut();
-                    case 4 -> deleteAccount();
-                    default -> System.out.println("Invalid choice. Please try again.");
+                    case 1 :
+                        viewProfileHistory();
+                        break;
+                    case 2 :
+                        continueLearning();
+                        break;
+                    case 3 :
+                        logOut();
+                        break;
+                    case 4 :
+                        deleteAccount();
+                        break;
+                    default :
+                        System.out.println("Invalid choice. Please try again.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
@@ -157,10 +171,13 @@ public class QuizPlatform {
         //MakeQuiz makeQuiz = new MakeQuiz();
 
         switch(choice2) {
-            case 1 -> MakeQuiz.main();
-            case 2 -> attemptQuiz.main();
+            case 1 : MakeQuiz.main();
+                     break;
+            case 2 : attemptQuiz.main();
+                     break;
             // case 3 -> GenerateQuiz();
-            default -> System.out.println("Invalid choice. Please try again.");
+            default :
+                System.out.println("Invalid choice. Please try again.");
         }
     }
 
