@@ -1,0 +1,9 @@
+Quiz ID2054283849Quiz Attempted: Sat Nov 16 20:56:25 IST 2024
+Question: am i ok?
+Options: {A=yes, B=No}
+Chosen Option: B, Correct Option: A
+Score: -1
+Question: is kavya ok?
+Options: {A=yes}
+Chosen Option: A, Correct Option: A
+Score: 3

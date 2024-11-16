@@ -11,16 +11,17 @@ public class AttemptQuiz extends Quiz {
     private int time;
 
     // Constructor
-    public AttemptQuiz(String dateAttempted, List<Character> chosenOptions, List<Integer> scorePerQuestion,
-                         List<String> incorrectQuesIDs, List<String> unattemptedQuesIDs,
-                         int totalScore, int time) {
-        this.dateAttempted = dateAttempted;
-        this.chosenOptions = chosenOptions;
-        this.scorePerQuestion = scorePerQuestion;
-        this.incorrectQuesIDs = incorrectQuesIDs;
-        this.unattemptedQuesIDs = unattemptedQuesIDs;
-        this.totalScore = totalScore;
-        this.time = time;
+    public AttemptQuiz(int id, String name, String topic, String username, String doc, double avgScore, double avgTime, int timeAlloted, int noQues)
+    {
+        super.setID(id);
+        super.setName(name);
+        super.setTopic(topic);
+        super.setUsername(username);
+        super.setDateOfCreation(doc);
+        super.setAvgScore(avgScore);
+        super.setAvgTime(avgTime);
+        super.setTimeAllotted(timeAlloted);
+        super.setNumberOfQuestions(noQues);
     }
 
     // Getters and Setters

@@ -116,11 +116,11 @@ public abstract class Quiz {
         this.date_of_creation = date_of_creation;
     }
 
-    public void setAvgScore(int avg_score) {
+    public void setAvgScore(double avg_score) {
         this.avg_score = avg_score;
     }
 
-    public void setAvgTime(int avg_time) {
+    public void setAvgTime(double avg_time) {
         this.avg_time = avg_time;
     }
 
