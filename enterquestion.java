@@ -117,7 +117,8 @@ public class enterquestion {
 
                 if (options.containsKey(CorrectAnswer)) {
                     System.out.println("Enter Correct Answer to change");
-                    System.out.println("Enter freeze to Freeze the Correct Answer");;
+                    System.out.println("Enter freeze to Freeze the Correct Answer");
+                    ;
                 } else {
                     System.out.println("Invalid correct answer. Please choose from the entered options.");
                 }
@@ -125,13 +126,52 @@ public class enterquestion {
             } else {
                 System.out.println("Invalid input. Enter a single character as the correct answer.");
             }
-
+        }
+        int marksForCorrect=1;
+        int marksForWrong=0;
+        System.out.println("Enter marks for the correct answer (default is 1)\nEnter freeze to keep the default value:");
+        while (true) {
+            String marksGiven = scanner.nextLine();
+            // Check if the user wants to freeze the correct answer
+            if (marksGiven.equalsIgnoreCase("freeze")) {
+                System.out.println("marks for correct answer has been frozen.");
+                break;
+            }
+            int cMarks=Integer.parseInt(marksGiven);
+            if (cMarks>=1) {
+                marksForCorrect = cMarks;
+                System.out.println("Enter marks for the correct answer to change");
+                System.out.println("Enter freeze to Freeze the Correct Answer");
+            }
+            else {
+                System.out.println("Invalid input. Please choose an integer >=1 or type freeze.");
+            }
+        }
+        System.out.println("Enter marks for the wrong answer (default is 0)\nEnter freeze to keep the default value:");
+        while (true) {
+            String marksGiven = scanner.nextLine();
+            // Check if the user wants to freeze the correct answer
+            if (marksGiven.equalsIgnoreCase("freeze")) {
+                System.out.println("marks for wrong answer has been frozen.");
+                break;
+            }
+            int wMarks=Integer.parseInt(marksGiven);
+            if (wMarks<=0) {
+                marksForWrong = wMarks;
+                System.out.println("Enter marks for the wrong answer to change");
+                System.out.println("Enter freeze to Freeze the Correct Answer");
+            }
+            else {
+                System.out.println("Invalid input. Please choose an integer <=0 or type freeze.");
+            }
         }
 
         // Set question details to Question class
         newQuestion.setQuestionText(Question_text);
         newQuestion.setCorrectOption(CorrectAnswer);
         newQuestion.setOptions(options);
+        newQuestion.setMarksForCorrect(marksForCorrect);
+        newQuestion.setMarksForWrong(marksForWrong);
         //Add question to the quiz class
         refQuiz.addQuestions(newQuestion);
     }
