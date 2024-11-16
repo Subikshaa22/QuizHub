@@ -16,19 +16,18 @@ import java.util.Date;
 
 public class AttemptedQuiz extends Quiz{
 
+    private Map<String, String> topics = new HashMap<>();
     // Display all available topics
     public String displayTopics() {
         String filePath = "Topics.csv"; // Path to the topics file
         String line;
-        Map<String, String> topics = new HashMap<>(); // Map to store TopicID and TopicName
-    
+        
         // Reading topics from the file
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine(); // Skip the header line
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split(",");  // Split by comma to get the topic ID and name
                 if (values.length == 2) {
-                    topics.put(values[0].trim(), values[1].trim());
+                    topics.put(values[0].trim(), values[1].trim());  // Store in map with topic ID as key
                 } else {
                     System.out.println("Skipping malformed line: " + line);
                 }
@@ -63,6 +62,7 @@ public class AttemptedQuiz extends Quiz{
             return displayTopics(); // Recursively call to allow retry
         }
     }
+
     
 
     // Display quizzes for the selected topic
