@@ -152,7 +152,7 @@ public class QuizPlatform {
         int choice2 = scanner.nextInt();
         scanner.nextLine();
 
-        AttemptQuiz attemptQuiz = new AttemptQuiz();
+        AttemptedQuiz attemptQuiz = new AttemptedQuiz();
         //MakeQuiz makeQuiz = new MakeQuiz();
 
         switch(choice2) {
