@@ -2,14 +2,21 @@ import java.util.Map;
 
 public class Question {
     private String text;
-    private Map<Character, String> options;
+    private Map<Character , String> options;
     private Character correctOption;
     private int marksForCorrect;
     private int marksForWrong;
     private double averageScore;
- 
+
+    public Question() {
+        // initialize default values here
+        this.text = "";
+        this.correctOption = '\0'; // Default to null character, can be set later
+    }
+
     // Constructor for Question class
-    public Question(String text, Map<Character, String> options, Character correctOption, int marksForCorrect, int marksForWrong, double averageScore) {
+    public Question(String text, Map<Character, String> options, Character correctOption, int marksForCorrect,
+            int marksForWrong, double averageScore) {
         this.text = text;
         this.options = options;
         this.correctOption = correctOption;
@@ -41,5 +48,18 @@ public class Question {
 
     public double getAverageScore() {
         return averageScore;
+    }
+
+    // setters
+    public void setQuestionText(String questionText) {
+        this.text = questionText;
+    }
+
+    public void setCorrectOption(char correctAnswer) {
+        this.correctOption = correctAnswer;
+    }
+
+    public void setOptions(Map<Character, String> options) {
+        this.options = options;
     }
 }
