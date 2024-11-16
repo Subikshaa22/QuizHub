@@ -18,23 +18,56 @@ public class AttemptedQuiz extends Quiz{
 
     // Display all available topics
     public String displayTopics() {
-        String x = "";
+        String filePath = "Topics.csv"; // Path to the topics file
+        String line;
+        Map<String, String> topics = new HashMap<>(); // Map to store TopicID and TopicName
+    
+        // Reading topics from the file
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            br.readLine(); // Skip the header line
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values.length == 2) {
+                    topics.put(values[0].trim(), values[1].trim());
+                } else {
+                    System.out.println("Skipping malformed line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading topics file: " + e.getMessage());
+        }
+    
+        if (topics.isEmpty()) {
+            System.out.println("No topics available.");
+            return "BACK";
+        }
+    
+        // Display the topics
         System.out.println("Available Topics:");
+        for (Map.Entry<String, String> entry : topics.entrySet()) {
+            System.out.println(entry.getKey() + ". " + entry.getValue());
+        }
         System.out.println("If the topic you want is not available, type BACK to go to the main menu.");
-        // Example topics (could be loaded from a file or database)
-        System.out.println("1. Math");
-        System.out.println("2. Science");
-        System.out.println("3. History");
-        
+    
+        // Get user input
         Scanner scanner = new Scanner(System.in);
-        x = scanner.nextLine();
-        
-        return x;
+        String userInput = scanner.nextLine();
+    
+        // Validate user input
+        if (topics.containsKey(userInput)) {
+            return topics.get(userInput); // Return the selected topic name
+        } else if (userInput.equalsIgnoreCase("BACK")) {
+            return "BACK";
+        } else {
+            System.out.println("Invalid input. Please try again.");
+            return displayTopics(); // Recursively call to allow retry
+        }
     }
+    
 
     // Display quizzes for the selected topic
     public List<String> displayQuizzes(String topicID) {
-        String filePath = "QuizFile.csv";
+        String filePath = "PreviousQuizzez.csv";
         String line;
         List<String> quizIDs = new ArrayList<>();
 
