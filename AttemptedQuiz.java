@@ -24,9 +24,8 @@ public class AttemptedQuiz extends Quiz{
     
         // Reading topics from the file
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine(); // Skip the header line
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
+                String[] values = line.split("\n");
                 if (values.length == 2) {
                     topics.put(values[0].trim(), values[1].trim());
                 } else {
@@ -85,6 +84,8 @@ public class AttemptedQuiz extends Quiz{
         return quizIDs;
     }
 
+    AttemptQuiz quiz = new AttemptQuiz();
+
     List<Question> questions = new ArrayList<>();
     List<String> chosenOptions = new ArrayList<>(Collections.nCopies(4, "-1"));
     int timeLimit;
@@ -94,17 +95,15 @@ public class AttemptedQuiz extends Quiz{
     // Load questions from a CSV file
     public void loadQuestions(String filePath) {
         questions.clear(); // Clear existing questions before loading new ones
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine(); // Skip the header line
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath)))
+        {
+
             String line;
 
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values.length < 10) {
-                    System.out.println("Skipping malformed line: " + line);
-                    continue;
-                }
-
+                String quizId = values[0];
+                String name = values[1];
                 String text = values[0].trim();
                 Map<Character, String> options = new HashMap<>();
                 options.put('a', values[1].trim());
@@ -202,6 +201,7 @@ public class AttemptedQuiz extends Quiz{
         }
         QuizPlatform quizPlatform = new QuizPlatform();
         String email = quizPlatform.currentUser.getEmail();
+        quizPlatform.currentUser.setAttempted()
         saveQuizResults(email);        
     }
 
@@ -250,7 +250,8 @@ public class AttemptedQuiz extends Quiz{
 
             if (quizIDs.contains(quizID)) {
                 System.out.println("You selected Quiz ID: " + quizID);
-                loadQuestions("QuestionQ1.csv");
+                String filename = quizID + ".csv";
+                loadQuestions(filename);
                 startQuiz();
             } else {
                 System.out.println("Invalid Quiz ID entered.");
