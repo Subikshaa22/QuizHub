@@ -43,7 +43,7 @@ public class MakeQuiz {
     }
 
 
-    public static void main() {
+    public static void main(String[] args) {
         String topic="";
 
         OUTER: for (int i = 0; i < 5; i++) {
