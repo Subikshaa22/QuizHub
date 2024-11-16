@@ -24,7 +24,7 @@ class quizManager {
     // Method to retrieve quizzes created by a specific user
     public List<Quiz> getQuizzesByUser(String username) {
         return quizList.stream()
-                .filter(quiz -> username.equals(quiz.getCreatedBy()))
+                .filter(quiz -> username.equals(quiz.getUsername()))
                 .collect(Collectors.toList());
     }
 

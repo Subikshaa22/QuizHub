@@ -3,7 +3,7 @@ import java.util.*;
 class ProfileHistory {
     private User user;  // User whose history we are tracking
     private Scanner scanner = new Scanner(System.in);  
-    private AttemptQuiz attemptQuiz;
+    private AttemptedQuiz attemptQuiz;
 
     public ProfileHistory(User user) {
         this.user = user;
@@ -31,20 +31,20 @@ class ProfileHistory {
 
     // Display attempted quizzes
     private void displayAttemptedQuizzes() {
-        List<AttemptedQuiz> quizzes = new ArrayList<>();
+        List<AttemptQuiz> quizzes = new ArrayList<>();
         for (Quiz quiz : user.getAttempted()) {
-            if (quiz instanceof AttemptedQuiz) {
-                quizzes.add((AttemptedQuiz) quiz);
+            if (quiz instanceof AttemptQuiz) {
+                quizzes.add((AttemptQuiz) quiz);
             }
         }
 
         quizzes.sort(Comparator
-        .comparing(AttemptedQuiz::getDateAttempted)
-        .thenComparing(AttemptedQuiz::getTime)
+        .comparing(AttemptQuiz::getDateAttempted)
+        .thenComparing(AttemptQuiz::getTime)
         .reversed());
 
         System.out.println("Quizzes Attempted:");
-        for (AttemptedQuiz quiz : quizzes) {
+        for (AttemptQuiz quiz : quizzes) {
             System.out.println("Quiz Title: " + quiz.getName());
             System.out.println("Quiz ID: " + quiz.getID());
             System.out.println("Topic: " + quiz.getTopic());
@@ -58,10 +58,15 @@ class ProfileHistory {
         String input = scanner.nextLine();
 
         if (!input.equalsIgnoreCase("exit")) {
-            AttemptedQuiz selectedQuiz = quizzes.stream()
-                    .filter(q -> q.getID().equals(input))
-                    .findFirst()
-                    .orElse(null);
+            AttemptQuiz selectedQuiz = null;
+            for (AttemptQuiz q : quizzes) {
+                String stringId = String.valueOf(q.getID());
+                if (stringId.equals(input)) {
+                    selectedQuiz = q;
+                    break; // Stop looping once the quiz is found
+                }
+            }
+
 
             if (selectedQuiz != null) {
                 reviewQuiz(selectedQuiz);
@@ -90,10 +95,14 @@ class ProfileHistory {
         String input = scanner.nextLine();
 
         if (!input.equalsIgnoreCase("exit")) {
-            Quiz selectedQuiz = createdQuizzes.stream()
-                    .filter(q -> q.getID().equals(input))
-                    .findFirst()
-                    .orElse(null);
+            Quiz selectedQuiz = null;
+            for (Quiz q : createdQuizzes) {
+                String stringId = String.valueOf(q.getID());
+                if (stringId.equals(input)) {
+                    selectedQuiz = q;
+                    break; // Stop looping once the quiz is found
+                }
+            }
 
             if (selectedQuiz != null) {
                 reviewCreatedQuiz(selectedQuiz);
@@ -104,7 +113,7 @@ class ProfileHistory {
     }
 
     // Review a selected quiz (for attempted quizzes)
-    private void reviewQuiz(AttemptedQuiz quiz) {
+    private void reviewQuiz(AttemptQuiz quiz) {
         System.out.println("Options: [review] or [back]");
         String option = scanner.nextLine();
 
@@ -148,7 +157,7 @@ class ProfileHistory {
     }
 
     // Display filter options
-    private void displayFilterOptions(AttemptedQuiz quiz) {
+    private void displayFilterOptions(AttemptQuiz quiz) {
         System.out.println("Choose a filter: [all] [incorrect] [unattempted]");
         String filterOption = scanner.nextLine();
         List<Question> questions = filterQuestions(quiz, filterOption);
@@ -161,7 +170,7 @@ class ProfileHistory {
     }
 
     // Filter questions based on user input
-    private List<Question> filterQuestions(AttemptedQuiz quiz, String filterOption) {
+    private List<Question> filterQuestions(AttemptQuiz quiz, String filterOption) {
         switch (filterOption.toLowerCase()) {
             case "all":
                 return quiz.getQuestions();
@@ -174,7 +183,7 @@ class ProfileHistory {
         }
     }
 
-    private List<Question> getIncorrectQuestions(AttemptedQuiz quiz) {
+    private List<Question> getIncorrectQuestions(AttemptQuiz quiz) {
         List<Question> incorrectQuestions = new ArrayList<>();
         List<Question> questions = quiz.getQuestions();
         List<Character> userAnswers = quiz.getChosenOptions();
@@ -191,7 +200,7 @@ class ProfileHistory {
         return incorrectQuestions;
     }
 
-    private List<Question> getUnattemptedQuestions(AttemptedQuiz quiz) {
+    private List<Question> getUnattemptedQuestions(AttemptQuiz quiz) {
         List<Question> unattemptedQuestions = new ArrayList<>();
         List<Question> questions = quiz.getQuestions();
         List<Character> userAnswers = quiz.getChosenOptions();
@@ -205,7 +214,7 @@ class ProfileHistory {
     }
 
     // Review questions
-    private void reviewQuestions(AttemptedQuiz quiz, List<Question> questions, String filterOption) {
+    private void reviewQuestions(AttemptQuiz quiz, List<Question> questions, String filterOption) {
         int index = 0;
         while (index >= 0 && index < questions.size()) {
             Question currentQuestion = questions.get(index);
@@ -254,14 +263,14 @@ class ProfileHistory {
     }
 
     // Show the answer
-    private void showAnswer(Question question, AttemptedQuiz quiz, String filterOption) {
+    private void showAnswer(Question question, AttemptQuiz quiz, String filterOption) {
         System.out.println("Correct Answer: " + question.getCorrectOption());
         if (!filterOption.equals("unattempted")) {
             System.out.println("Your Answer: " + getUserAnswer(quiz, question));
         }
     }
 
-    private char getUserAnswer(AttemptedQuiz quiz, Question question) {
+    private char getUserAnswer(AttemptQuiz quiz, Question question) {
         int questionIndex = quiz.getQuestions().indexOf(question);
         return quiz.getChosenOptions().get(questionIndex);
     }

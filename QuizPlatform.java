@@ -145,7 +145,8 @@ public class QuizPlatform {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Accessing Continue Learning...");
-        System.out.println("1. Attempt Quiz");
+        System.out.println("1. Make A Quiz");
+        System.out.println("2. Attempt Quiz");
         System.out.print("Choice: ");
         // Here you can integrate the `quizManager` or any other class functionality for quiz learning
 
@@ -156,7 +157,7 @@ public class QuizPlatform {
         //MakeQuiz makeQuiz = new MakeQuiz();
 
         switch(choice2) {
-            //case 1 -> makeQuiz.main();
+            case 1 -> MakeQuiz.main();
             case 2 -> attemptQuiz.main();
             // case 3 -> GenerateQuiz();
             default -> System.out.println("Invalid choice. Please try again.");

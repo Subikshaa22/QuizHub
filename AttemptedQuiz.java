@@ -14,7 +14,7 @@ import java.util.TimerTask;
 import java.util.Date;
 
 
-public class AttemptedQuiz {
+public class AttemptedQuiz extends Quiz{
 
     // Display all available topics
     public String displayTopics() {
