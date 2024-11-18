@@ -14,15 +14,12 @@ extern "C" {
 
     JNIEXPORT jint Java_review_MakeIQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename, jint id, jstring name, jstring topic, jstring username, jint timeAllo, jint nq, jstring date)
     {
-        cout<<"hello in makefilecpp"<<endl;
+        //cout<<"hello in makefilecpp"<<endl;
 
         // Convert jstring filename to C++ string --correct
         const char *filenameChars = env->GetStringUTFChars(filename, NULL);
         string cppFilename(filenameChars);
-
-        cout <<"file after conversion " + cppFilename<<endl;
-
-        env->ReleaseStringUTFChars(filename, filenameChars);
+         env->ReleaseStringUTFChars(filename, filenameChars);
 
         // Get method IDs for setters in the Java class
         jclass quizClass = env->GetObjectClass(newQuiz);
@@ -85,7 +82,7 @@ extern "C" {
         const char *dateOfCreationStr = env->GetStringUTFChars(dateOfCreationVal, NULL);
 
         // Write data to file
-        outfile << idVal << "," << nameStr << "," << topicStr<< "," << usernameStr<< ","<< dateOfCreationStr<< ","<< avgScoreVal<< ","<< avgTimeVal<< ","<< timeAllottedVal<< ","<< numOfQuestionsVal <<",";
+        outfile << idVal << "," << nameStr << "," << topicStr<< "," << usernameStr<< ","<< dateOfCreationStr<< ","<< avgScoreVal<< ","<< avgTimeVal<< ","<< timeAllottedVal<< ","<< numOfQuestionsVal<< ","<<endl;
 
         // Release memory for Java strings
         env->ReleaseStringUTFChars(nameVal, nameStr);
@@ -93,7 +90,7 @@ extern "C" {
         env->ReleaseStringUTFChars(usernameVal, usernameStr);
         env->ReleaseStringUTFChars(dateOfCreationVal, dateOfCreationStr);
 
-        cout<<"file made"<<endl;
+        //cout<<"file made"<<endl;
 
         // Close the file
         outfile.close(); 
@@ -216,9 +213,6 @@ extern "C" {
         jmethodID listSize = env->GetMethodID(listClass, "size", "()I");
         jint listSizeInt = env->CallIntMethod(questionsList, listSize);
 
-        cout <<"question lit toh mil gaya" <<endl;
-        cout << "lsit size" << listSizeInt <<endl;
-
 
         //iterate through the list of questions
         for (int i = 0; i < listSizeInt; ++i)
@@ -238,7 +232,7 @@ extern "C" {
             // get details of the question object
             jmethodID getQuestionText = env->GetMethodID(questionClass, "getText", "()Ljava/lang/String;");
 
-         // call getters for getting jni value
+            // call getters for getting jni value
             jstring questionText = (jstring)env->CallObjectMethod(questionObj, getQuestionText);
 
             // Convert question text to a C++ string
@@ -248,14 +242,10 @@ extern "C" {
             outfile << questionTextStr <<",";
             env->ReleaseStringUTFChars(questionText, questionTextStr);
 
-            cout <<" questions detailsss mil gyiii excpet correct ans "<<endl;
 
             jmethodID getCorrectAnswer = env->GetMethodID(questionClass, "getCorrectOption", "()Ljava/lang/Character;");
             jobject correctAnswerObj = env->CallObjectMethod(questionObj, getCorrectAnswer);
             jchar correctAnswer = env->CallCharMethod(correctAnswerObj, env->GetMethodID(env->GetObjectClass(correctAnswerObj), "charValue", "()C"));
-
-
-            cout <<"got correct option" <<endl;
 
             // Get map of options and the size of the map
             jmethodID getOptions = env->GetMethodID(questionClass, "getOptions", "()Ljava/util/Map;");
@@ -270,10 +260,7 @@ extern "C" {
                   std::cerr << "optionsMap is null!" << std::endl;
             }
 
-            cout <<"got options map"<<endl;
-
-
-            // Get the 'keySet' method and call it to get the Set of keys (option labels)
+            // Get the 'keySet' method and call it to get the Set of keys (oclearption labels)
             jmethodID keySetMethod = env->GetMethodID(mapClass, "keySet", "()Ljava/util/Set;");
             jobject keySet = env->CallObjectMethod(optionsMap, keySetMethod);
 
@@ -288,37 +275,39 @@ extern "C" {
             jmethodID hasNextMethod = env->GetMethodID(iteratorClass, "hasNext", "()Z");
             jmethodID nextMethod = env->GetMethodID(iteratorClass, "next", "()Ljava/lang/Object;");
 
-            cout <<" go tkeys n iterator" <<endl;
+           // cout <<" go tkeys n iterator" <<endl;
+           cout<<"is this printing"<<endl;
 
             //iterate over the keyset using the iterator
-               while (env->CallBooleanMethod(iterator, hasNextMethod))
-               {
-                   // Get the next key (which is a Character)
-                   jobject keyObj = env->CallObjectMethod(iterator, nextMethod);
+           while (env->CallBooleanMethod(iterator, hasNextMethod))
+           {
+               // Get the next key (which is a Character)
+               jobject keyObj = env->CallObjectMethod(iterator, nextMethod);
 
-                   // Convert the key (Character) to jchar
-                   jchar keyChar = env->CallCharMethod(keyObj, env->GetMethodID(env->FindClass("java/lang/Character"), "charValue", "()C"));
+               // Convert the key (Character) to jchar
+               jchar keyChar = env->CallCharMethod(keyObj, env->GetMethodID(env->FindClass("java/lang/Character"), "charValue", "()C"));
 
-                   // Now get the corresponding value from the map using the 'get' method
-                   jmethodID getMethod = env->GetMethodID(mapClass, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
-                   jobject mapValue = env->CallObjectMethod(optionsMap, getMethod, keyObj);
+               // Now get the corresponding value from the map using the 'get' method
+               jmethodID getMethod = env->GetMethodID(mapClass, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+               jobject mapValue = env->CallObjectMethod(optionsMap, getMethod, keyObj);
 
-                   // Convert the map value (String) to a C++ string
-                   const char* optionValueStr = env->GetStringUTFChars((jstring)mapValue, nullptr);
+               // Convert the map value (String) to a C++ string
+               const char* optionValueStr = env->GetStringUTFChars((jstring)mapValue, nullptr);
 
-                    // Write the option to file (you can format it as needed, such as "A: 'Option Text'")
-                    outfile << (char)keyChar << "," << optionValueStr << ",";
+                // Write the option to file (you can format it as needed, such as "A: 'Option Text'")
+                outfile << (char)keyChar << "," << optionValueStr << ",";
 
-                    cout <<"wrote option"<< endl;
-                    // Release resources for the strings
-                    env->ReleaseStringUTFChars((jstring)mapValue, optionValueStr);
-
-                    // Write correct answer
-                    outfile << (char)correctAnswer << ","<< endl;
-               }
-               // end iterating through options
+                // cout <<"wrote option"<< endl;
+                // Release resources for the strings
+                env->ReleaseStringUTFChars((jstring)mapValue, optionValueStr);
 
 
+           }
+
+            // end iterating through options
+            // Write correct answer
+            outfile << (char)correctAnswer << ",";
+            outfile << endl;
         }
         // stop iterating thorugh the questions list
 

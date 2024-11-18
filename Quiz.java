@@ -9,9 +9,6 @@ public abstract class Quiz {
     protected double avg_time;
     protected String filepath;
     protected List<Question> questions = new ArrayList<>();
-
-    // nain
-    // -=======================================================================================
     protected int time_allotted;
     protected int number_of_questions;
     protected String username;
@@ -31,7 +28,19 @@ public abstract class Quiz {
         this.time_allotted = 0; // Default to 0
         this.number_of_questions = 0; // Default to 0
         this.username = ""; // Initialize username to an empty string
+    }
 
+    // Parameterized Constructor 
+    public Quiz(int ID, String name, String topic, String date_of_creation, 
+                double avg_score, double avg_time,int time_allotted, int noOfQuestions) {
+        this.ID = ID;
+        this.name = name;
+        this.topic = topic;
+        this.date_of_creation = date_of_creation;
+        this.avg_score = avg_score;
+        this.avg_time = avg_time;
+        this.time_allotted = time_allotted;
+        this.number_of_questions = noOfQuestions;
     }
 
 
@@ -132,23 +141,14 @@ public abstract class Quiz {
         this.questions = questions;
     }
 
-    //public void setUsername(String u){ this.username = u;}
-
-    // Method to print all quiz details
-    public void printDetails() {
-        System.out.println("Quiz Details:");
-        System.out.println("ID: " + ID);
-        System.out.println("Name: " + name);
-        System.out.println("Topic: " + topic);
-        System.out.println("Date of Creation: " + date_of_creation);
-        System.out.println("Average Score: " + avg_score);
-        System.out.println("Average Time: " + avg_time);
-        System.out.println("Filepath: " + filepath);
-        System.out.println("Questions: " + questions.size() + " total");
-        for (Question question : questions) {
-            // Assuming Question class has a toString() method
-            System.out.println(" - " + question.toString());
-        }
+    @Override
+    public String toString() {
+        return "Quiz ID: " + ID + ", Quiz Name: " + name + ", Topic: " + topic + 
+               ", Date of Creation: " + date_of_creation + 
+               ", Average Score: " + avg_score + "marks" + 
+               ", Average Time Taken: " + avg_time + " mins" + 
+               ", Time Allotted: " + time_allotted + " mins" + 
+               ", Number of Questions: " + number_of_questions;
     }
 
     public void addQuestions(Question question) { // Added this -Ananya
