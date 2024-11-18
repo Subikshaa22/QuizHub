@@ -3,6 +3,9 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +14,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Date;
 
 public class AttemptedQuiz extends Quiz{
@@ -109,6 +114,28 @@ public class AttemptedQuiz extends Quiz{
     int timeLimit;
     boolean quizSubmitted = false;
     int currentQuestionIndex = 0;
+
+    // Function to return a list of QuizIDs 
+    public static List<String> extractQuizIds(String filePath) {
+        List<String> quizIds = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            // Regex pattern to match lines containing the Quiz ID
+            Pattern quizIdPattern = Pattern.compile("Quiz ID: (\\d+)");
+            
+            while ((line = reader.readLine()) != null) {
+                // Check if the line contains "Quiz ID:"
+                Matcher matcher = quizIdPattern.matcher(line);
+                if (matcher.find()) {
+                    // If a match is found, extract the quiz ID
+                    quizIds.add(matcher.group(1));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return quizIds;
+    }
 
     // Load questions from a CSV file
     public void loadQuestions(String filePath) {
@@ -279,11 +306,18 @@ public class AttemptedQuiz extends Quiz{
             //System.out.println(QuizPlatform.currentUser.getAttempted());
             int alreadyAttempted = 0;
 
-            for (AttemptQuiz i:QuizPlatform.currentUser.getAttempted())
+            Path filePath = Paths.get(quizPlatform.currentUser.getEmail()+"_quiz_results.txt");
+            // Check if the file exists
+            if (Files.exists(filePath))
             {
-                if (i.getID() == Integer.parseInt(quizID))
+                List<String> quizIds = extractQuizIds(quizPlatform.currentUser.getEmail()+"_quiz_results.txt");
+
+                for (String i:quizIds)
                 {
-                    alreadyAttempted = 1;
+                    if (i == quizID)
+                    {
+                        alreadyAttempted = 1;
+                    }
                 }
             }
 
