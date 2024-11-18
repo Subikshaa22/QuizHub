@@ -207,60 +207,71 @@ public class AttemptedQuiz extends Quiz{
     // Start the quiz
     public void startQuiz(String quizID) {
         Scanner scanner = new Scanner(System.in);
-
-        /*Timer timer = new Timer();
+        Timer timer = new Timer();
+        quizSubmitted = false; // Reset quiz submission flag
+    
+        // Schedule the timer task to submit the quiz after 30 seconds
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (!quizSubmitted) {
-                    System.out.println("Time is up!");
+                    System.out.println("\nTime is up! The quiz is being submitted automatically.");
                     quizSubmitted = true;
+                    QuizPlatform quizPlatform = new QuizPlatform();
+                    String email = quizPlatform.currentUser.getEmail();
+                    saveQuizResults(email, quizID);
                 }
-                timer.cancel();
+                timer.cancel(); // Stop the timer after submission
             }
-        }, timeLimit * 1000);*/
-
-        /*long startTime = System.currentTimeMillis(); // Record the start time
-        long duration = 30 * 1000; // Duration in milliseconds (30 seconds)*/
-
+        }, 30 * 1000); // Schedule for 30 seconds (30000 ms)
+    
+        // Start the quiz loop
         while (!quizSubmitted) {
-            // Check if the time limit has been reached
-            /*if (System.currentTimeMillis() - startTime > duration) {
-                System.out.println("Time is up! The quiz is being submitted automatically.");
-                quizSubmitted = true;
-                break;
-            }*/
-
             displayQuestion(currentQuestionIndex);
+    
             String input = scanner.nextLine().trim();
-
-            if (input.equals("n")) {
-                currentQuestionIndex = (currentQuestionIndex + 1) % questions.size();
-            } else if (input.equals("p")) {
-                currentQuestionIndex = (currentQuestionIndex - 1 + questions.size()) % questions.size();
-            } else if (input.equals("s")) {
-                quizSubmitted = true;
-                System.out.println("Quiz submitted successfully!");
-                break;
-            } else if (input.matches("[QWERTYUIOPLKJHGFDSAZXCBVNM]")) {
-                chosenOptions.set(currentQuestionIndex, input);
-            } else {
-                try {
-                    int questionNumber = Integer.parseInt(input);
-                    if (questionNumber > 0 && questionNumber <= questions.size()) {
-                        currentQuestionIndex = questionNumber - 1;
+    
+            if (quizSubmitted) {
+                break; // Exit loop if quiz was submitted automatically
+            }
+    
+            switch (input.toLowerCase()) {
+                case "n":
+                    currentQuestionIndex = (currentQuestionIndex + 1) % questions.size();
+                    break;
+                case "p":
+                    currentQuestionIndex = (currentQuestionIndex - 1 + questions.size()) % questions.size();
+                    break;
+                case "s":
+                    quizSubmitted = true;
+                    System.out.println("Quiz submitted successfully!");
+                    timer.cancel(); // Cancel the timer manually
+                    break;
+                default:
+                    if (input.matches("[A-Za-z]")) {
+                        chosenOptions.set(currentQuestionIndex, input);
                     } else {
-                        System.out.println("Invalid question number.");
+                        try {
+                            int questionNumber = Integer.parseInt(input);
+                            if (questionNumber > 0 && questionNumber <= questions.size()) {
+                                currentQuestionIndex = questionNumber - 1;
+                            } else {
+                                System.out.println("Invalid question number.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please try again.");
+                        }
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please try again.");
-                }
             }
         }
-
-        QuizPlatform quizPlatform = new QuizPlatform();
-        String email = quizPlatform.currentUser.getEmail();
-        saveQuizResults(email,quizID);
+    
+        // Save quiz results after submission
+        if (!quizSubmitted) {
+            quizSubmitted = true;
+            QuizPlatform quizPlatform = new QuizPlatform();
+            String email = quizPlatform.currentUser.getEmail();
+            saveQuizResults(email, quizID);
+        }
     }
 
     public void saveQuizResults(String userEmail, String quizID) {
