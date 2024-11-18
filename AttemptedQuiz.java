@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Date;
 
 public class AttemptedQuiz extends Quiz{
 
     private Map<String, String> topics = new HashMap<>();
+    private List<String> quizIDs = new ArrayList<>();
+
     // Display all available topics
     public String displayTopics() {
         String filePath = "Topics.csv"; // Path to the topics file
@@ -90,23 +92,38 @@ public class AttemptedQuiz extends Quiz{
     }
 
     // Display quizzes for the selected topic
-    public List<String> displayQuizzes(String topicID) {
+    public List<Quiz> displayQuizzes(String topicID) {
         String filePath = "PreviousQuizzez.csv";
         String line;
         List<String> quizIDs = new ArrayList<>();
+        List<Quiz> quizzes = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
+                
+                
                 if (values[2].equalsIgnoreCase(topicID)) {
+                    String quizID = values[0].trim();
+                    String quizName = values[1].trim();
+                    String quizTopic = values[2].trim();
+                    String dateOfCreation = values[3].trim();
+                    int avgScore = Integer.parseInt(values[4].trim()); // Average score
+                    int avgTimeTaken = Integer.parseInt(values[5].trim()); // Average time taken
+                    int timeDuration = Integer.parseInt(values[6].trim()); // Time duration of quiz
+                    int numQuestions = Integer.parseInt(values[7].trim()); // Number of questions
+                    
+                    // Create a new Quiz object
+                    Quiz quiz = new AttemptQuiz(quizID, quizName, quizTopic,"", dateOfCreation, avgScore, avgTimeTaken, timeDuration, numQuestions);
+                    quizzes.add(quiz); // Add it to the list
                     quizIDs.add(values[0]);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return quizIDs;
+        return quizzes;
     }
 
     List<Question> questions = new ArrayList<>();
@@ -315,11 +332,14 @@ public class AttemptedQuiz extends Quiz{
         }
 
         System.out.println("Available quizzes under the selected topic:");
-        List<String> quizIDs = displayQuizzes(topicID);
+        List<Quiz> quizzes = displayQuizzes(topicID);
 
-        if (!quizIDs.isEmpty()) {
-            for (String quizID : quizIDs) {
-                System.out.println(quizID);
+        if (!quizzes.isEmpty()) {
+            int count=1;
+            for (Quiz quiz : quizzes) {
+                System.out.println("Quiz " + count + ":");
+                count++;
+                System.out.println(quiz); // This will call the toString method of Quiz
             }
 
             System.out.print("Enter a Quiz ID from the list above: ");
@@ -352,7 +372,7 @@ public class AttemptedQuiz extends Quiz{
                 System.out.println("You selected Quiz ID: " + quizID);
                 String filePath = quizID+".csv";  // Path to your CSV file
                 List<String> attributes = getWordsFromFirstLine(filePath);
-                AttemptQuiz attemptQuiz = new AttemptQuiz(Integer.parseInt(quizID), attributes.get(1), attributes.get(2), attributes.get(3), attributes.get(4), Double.parseDouble(attributes.get(5)), Double.parseDouble(attributes.get(6)), Integer.parseInt(attributes.get(7)), Integer.parseInt(attributes.get(8)));
+                AttemptQuiz attemptQuiz = new AttemptQuiz(quizID, attributes.get(1), attributes.get(2), attributes.get(3), attributes.get(4), Double.parseDouble(attributes.get(5)), Double.parseDouble(attributes.get(6)), Integer.parseInt(attributes.get(7)), Integer.parseInt(attributes.get(8)));
                 QuizPlatform.currentUser.getAttempted().add(attemptQuiz);
                 loadQuestions(quizID+".csv");
                 startQuiz(quizID);

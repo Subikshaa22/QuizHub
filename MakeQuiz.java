@@ -15,12 +15,9 @@ public class MakeQuiz {
 
     public static void ananya(MakeQuiz remove_error)
     {
-        
-        // Now you can access non-static newQuiz through the instance
         enterquestion ananya = new enterquestion();
         ananya.setQobject(remove_error.newQuiz);  // Access newQuiz through remove_error instance
         ananya.EnterQuestions();
-
         System.out.println(remove_error.newQuiz.getQuestions().size());
     }
 
@@ -35,8 +32,6 @@ public class MakeQuiz {
 
     public static void nainika(MakeQuiz remove_error, int quizID,String name,String topic, String date)
     {
-        //System.out.println("im in nainka");
-
         review nainika = new review();
         nainika.setQobject(remove_error.newQuiz);  // Access newQuiz through remove_error instance
         nainika.reviewq(quizID,name,topic, date);
@@ -47,7 +42,6 @@ public class MakeQuiz {
         String topic="";
 
         OUTER: for (int i = 0; i < 5; i++) {
-            System.out.println("hello is this printing");
             System.out.println("The following topics are available:");
             MakeQuiz qz = new MakeQuiz();
             qz.displayTopics();
@@ -65,7 +59,6 @@ public class MakeQuiz {
                     boolean exists = true;
                    
                     // call cpp fxn to check if exists or not instead of using true, send topic as
-
                     exists = qz.CheckIfTopicExists(topic);
                     if (exists == true)
                         break OUTER;
@@ -80,7 +73,6 @@ public class MakeQuiz {
                     topic = scanner.nextLine();
                     
                     // call cpp save to file with topic as parameter
-
                     int done = qz.SaveTopic(topic);
                     break OUTER;
                 }
@@ -132,7 +124,6 @@ public class MakeQuiz {
                 case 3: {
                     // call review fxn
                     nainika(remove_error, quizID,name,topic, date_created);
-                    System.out.println("my class is done bye");
                     break N; // review fxn - time and to esit or discard or save
 
                 }
@@ -140,7 +131,6 @@ public class MakeQuiz {
                     System.out.println("Invalid choice , try again! ");
             }
         }
-
     }
 }
 // end of class

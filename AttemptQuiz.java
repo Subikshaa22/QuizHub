@@ -11,7 +11,7 @@ public class AttemptQuiz extends Quiz {
     private int time;
 
     // Constructor
-    public AttemptQuiz(int id, String name, String topic, String username, String doc, double avgScore, double avgTime, int timeAlloted, int noQues)
+    public AttemptQuiz(String id, String name, String topic, String username, String doc, double avgScore, double avgTime, int timeAlloted, int noQues)
     {
         super.setID(id);
         super.setName(name);

@@ -1,7 +1,7 @@
 import java.util.*;
 
 public abstract class Quiz {
-    protected int ID;
+    protected String ID;
     protected String name;
     protected String topic;
     protected String date_of_creation;
@@ -16,7 +16,7 @@ public abstract class Quiz {
 
     // Default constructor
     public Quiz() {
-        this.ID = 0; // Initialize ID to an empty string
+        this.ID = ""; // Initialize ID to an empty string
         this.name = ""; // Initialize name to an empty string
         this.topic = ""; // Initialize topic to an empty string
         this.date_of_creation = ""; // Initialize date_of_creation to an empty string
@@ -31,7 +31,7 @@ public abstract class Quiz {
     }
 
     // Parameterized Constructor 
-    public Quiz(int ID, String name, String topic, String date_of_creation, 
+    public Quiz(String ID, String name, String topic, String date_of_creation, 
                 double avg_score, double avg_time,int time_allotted, int noOfQuestions) {
         this.ID = ID;
         this.name = name;
@@ -76,7 +76,7 @@ public abstract class Quiz {
     /// ===============================================
 
     // Getters
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
@@ -109,7 +109,7 @@ public abstract class Quiz {
     }
 
     // Setters
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 
@@ -143,12 +143,11 @@ public abstract class Quiz {
 
     @Override
     public String toString() {
-        return "Quiz ID: " + ID + ", Quiz Name: " + name + ", Topic: " + topic + 
+        return "ID: " + ID + ", Name: " + name + ", Topic: " + topic + 
                ", Date of Creation: " + date_of_creation + 
-               ", Average Score: " + avg_score + "marks" + 
+               ", Average Score: " + avg_score + " marks" + 
                ", Average Time Taken: " + avg_time + " mins" + 
-               ", Time Allotted: " + time_allotted + " mins" + 
-               ", Number of Questions: " + number_of_questions;
+               ", Time Allotted: " + time_allotted + " mins";
     }
 
     public void addQuestions(Question question) { // Added this -Ananya
