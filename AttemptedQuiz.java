@@ -220,7 +220,16 @@ public class AttemptedQuiz extends Quiz{
             }
         }, timeLimit * 1000);*/
 
+        /*long startTime = System.currentTimeMillis(); // Record the start time
+        long duration = 30 * 1000; // Duration in milliseconds (30 seconds)*/
+
         while (!quizSubmitted) {
+            // Check if the time limit has been reached
+            /*if (System.currentTimeMillis() - startTime > duration) {
+                System.out.println("Time is up! The quiz is being submitted automatically.");
+                quizSubmitted = true;
+                break;
+            }*/
 
             displayQuestion(currentQuestionIndex);
             String input = scanner.nextLine().trim();
@@ -248,6 +257,7 @@ public class AttemptedQuiz extends Quiz{
                 }
             }
         }
+
         QuizPlatform quizPlatform = new QuizPlatform();
         String email = quizPlatform.currentUser.getEmail();
         saveQuizResults(email,quizID);
@@ -305,18 +315,19 @@ public class AttemptedQuiz extends Quiz{
             String quizID = scanner.nextLine();
             //System.out.println(QuizPlatform.currentUser.getAttempted());
             int alreadyAttempted = 0;
-
-            Path filePath = Paths.get(quizPlatform.currentUser.getEmail()+"_quiz_results.txt");
+            QuizPlatform quizPlatform = new QuizPlatform();
+            Path filePath1 = Paths.get(quizPlatform.currentUser.getEmail()+"_quiz_results.txt");
             // Check if the file exists
-            if (Files.exists(filePath))
+            if (Files.exists(filePath1))
             {
                 List<String> quizIds = extractQuizIds(quizPlatform.currentUser.getEmail()+"_quiz_results.txt");
 
                 for (String i:quizIds)
                 {
-                    if (i == quizID)
+                    if (i.equals(quizID))
                     {
                         alreadyAttempted = 1;
+                        break;
                     }
                 }
             }

@@ -57,4 +57,14 @@ public class Question {
     public void setOptions(Map<Character, String> options) {
         this.options = options;
     }
+
+    public void setMarksForCorrect(int marks)
+    {
+        this.marksForCorrect=marks;
+    }
+
+    public void setMarksForWrong(int marks)
+    {
+        this.marksForWrong=marks;
+    }
 }
