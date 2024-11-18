@@ -35,8 +35,6 @@ public class MakeQuiz {
 
     public static void nainika(MakeQuiz remove_error, int quizID,String name,String topic, String date)
     {
-        System.out.println("im in nainka");
-
         review nainika = new review();
         nainika.setQobject(remove_error.newQuiz);  // Access newQuiz through remove_error instance
         nainika.reviewq(quizID,name,topic, date);
@@ -131,7 +129,6 @@ public class MakeQuiz {
                 case 3: {
                     // call review fxn
                     nainika(remove_error, quizID,name,topic, date_created);
-                    System.out.println("my class is done bye");
                     break N; // review fxn - time and to esit or discard or save
 
                 }

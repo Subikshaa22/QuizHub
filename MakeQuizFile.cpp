@@ -275,9 +275,6 @@ extern "C" {
             jmethodID hasNextMethod = env->GetMethodID(iteratorClass, "hasNext", "()Z");
             jmethodID nextMethod = env->GetMethodID(iteratorClass, "next", "()Ljava/lang/Object;");
 
-           // cout <<" go tkeys n iterator" <<endl;
-           cout<<"is this printing"<<endl;
-
             //iterate over the keyset using the iterator
            while (env->CallBooleanMethod(iterator, hasNextMethod))
            {
@@ -318,8 +315,7 @@ extern "C" {
         env->ReleaseStringUTFChars(filename, filename_cstr);
         
         cout << "Quiz Data appended successfully!" << endl;
-        //Java_review_AddToPrevQuizFile(env, obj);
-
+       
         return 0;  // Success
     }
 

@@ -17,7 +17,6 @@ public class review {
 
     public void setQobject(ExistingQuizzes refQuiz)
     {
-        System.out.println("hello in set object");
         this.refQuiz = refQuiz;
     }
 
@@ -55,27 +54,18 @@ public class review {
                     String file_extension = ".csv";
                     String filename = quiz_file_name + file_extension;
 
-                    System.out.println("filename is set to "+filename);
-
                     int q = refQuiz.questions.size();
                     refQuiz.setNumberOfQuestions(q);
 
-                    System.out.println("No of questions "+q);
 
                     // create and write to quiz file
                     review access_cpp =new review();
 
-
                     String user = refQuiz.getUsername();
-                    System.out.println("username is "+ user);
-
-
-
+                  
                     int check = access_cpp.MakeIQuizFile(refQuiz, filename, quizID, name, topic, "nainika" , time, q, date);
                     int check2 = access_cpp.WriteToQuizFile(refQuiz, filename);
                     access_cpp.AddToPrevQuizFile(refQuiz);
-
-
                     choice = 4;
                     break OUTER;
                 }
