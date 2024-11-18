@@ -145,7 +145,7 @@ public abstract class Quiz {
     public String toString() {
         return "Quiz ID: " + ID + ", Quiz Name: " + name + ", Topic: " + topic + 
                ", Date of Creation: " + date_of_creation + 
-               ", Average Score: " + avg_score "marks" + 
+               ", Average Score: " + avg_score + "marks" + 
                ", Average Time Taken: " + avg_time + " mins" + 
                ", Time Allotted: " + time_allotted + " mins" + 
                ", Number of Questions: " + number_of_questions;
