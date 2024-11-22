@@ -15,6 +15,21 @@ QuizHub is a command-line interface (CLI) platform developed as a course project
 ## Features
 
 ## Tech Stack
+- Languages
+  - C++
+  - Java
+
+- Interoperability
+  - Java Native Interface (JNI) : Facilitates seamless interoperability between C++ and Java, enabling efficient cross-language communication and integration of native and high-level components.
+
+- Data Storage
+  - CSV Files : Used as a lightweight, portable solution for storing and managing quiz and user data in a comma-separated format.
+
+- Tools
+  - IntelliJ IDEA
+  - Visual Studio Code
+  - Github
+ 
 
 ## File Structure and Design Choices
 
