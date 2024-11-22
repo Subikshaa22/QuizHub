@@ -7,7 +7,7 @@
 
 // Include the header files of the java files that are using these functions 
 #include "makequiz_MakeQuiz.h"
-#include "makequiz_review.h"
+#include "makequiz_ReviewQuiz.h"
 
 using namespace std;
 
