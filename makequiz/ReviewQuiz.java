@@ -1,19 +1,24 @@
 package makequiz;
 import java.util.*;
 
-public class ReviewQuestion {
+public class ReviewQuiz {
     // Declare the native functions  to interact with C++ library
-    public native int makeIQuizFile(ExistingQuizzes refQuiz, String filename, int quizID, String name, String topic, String username, int time, int q, String date);
-    public native int writeToQuizFile(ExistingQuizzes refQuiz, String filename);
-    public native int addToPrevQuizFile(ExistingQuizzes refQuiz);
+    public native int MakeIQuizFile(ExistingQuizzes refQuiz, String filename, int quizID, String name, String topic, String username, int time, int q, String date);
+    public native int WriteToQuizFile(ExistingQuizzes refQuiz, String filename);
+    public native int AddToPrevQuizFile(ExistingQuizzes refQuiz);
 
-    // Load the C++ library 
+    // Load the native library to access the C++ functions 
     static { 
-        System.loadLibrary("mylib"); 
+        try {
+            System.loadLibrary("mylib");
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Error loading native library: " + e.getMessage());
+            System.exit(1);
+        }
     }
 
     // Default constructor 
-    public ReviewQuestion() {
+    public ReviewQuiz() {
     }
 
     // Static Scanner instance for taking user input
@@ -39,7 +44,7 @@ public class ReviewQuestion {
         time = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character left by nextInt()
 
-        int choice = 0; // Store menu choice 
+        int choice = -1; // Store menu choice 
         OUTER: while (choice != 4) {
             System.out.println("Choose an option:");
             System.out.println("1. Edit Questions ");
@@ -47,9 +52,19 @@ public class ReviewQuestion {
             System.out.println("3. Discard Quiz ");
             System.out.println("Enter 1/2/3:");
 
-            // Get the choice and consume new line character 
-            choice = scanner.nextInt();
-            scanner.nextLine();
+            // Check if an integer is input 
+            boolean validInput = false;
+            while (!validInput) {
+                try {
+                    System.out.print("Enter a number: ");
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline character 
+                    validInput = true; // If no exception, input is valid
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
 
             switch (choice) {
                 case 1: {
@@ -66,13 +81,13 @@ public class ReviewQuestion {
                     String filename = quizFilename + fileExtension;
                     
                     // Create an instance of the review class to interact with C++ functions
-                    ReviewQuestion callCppFunctions = new ReviewQuestion();
+                    ReviewQuiz callCppFunctions = new ReviewQuiz();
 
                     // Get the username 
                     String user = refQuiz.getUsername();
                   
                     // Make and write to quiz file using cpp functions 
-                    callCppFunctions.MakeIQuizFile(refQuiz, filename, quizID, name, topic, user , time, q, date);
+                    callCppFunctions.MakeIQuizFile(refQuiz, filename, quizID, name, topic, user , time, noOfQues, date);
                     callCppFunctions.WriteToQuizFile(refQuiz, filename);
                     callCppFunctions.AddToPrevQuizFile(refQuiz);
                     choice = 4; // Exit the loop
@@ -83,8 +98,21 @@ public class ReviewQuestion {
                     System.out.println("Are you sure you want to discard the quiz?");
                     System.out.println("1. Yes ");
                     System.out.println("2. No ");
-                    int dis = scanner.nextInt();
-                    scanner.nextLine();
+
+                    // Check if int is entered 
+                    int dis = -1;
+                    boolean disValidInput = false;
+                    while (!disValidInput) {
+                        try {
+                            System.out.print("Enter a number: ");
+                            choice = scanner.nextInt();
+                            scanner.nextLine(); // Consume newline character 
+                            disValidInput = true; // If no exception, input is valid
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input. Please enter a number.");
+                            scanner.nextLine(); // Clear the invalid input
+                        }
+                    }
 
                     switch (dis) {
                         case 1: {
