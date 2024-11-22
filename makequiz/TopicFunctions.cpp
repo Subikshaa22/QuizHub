@@ -102,7 +102,7 @@ extern "C" {
             }
 
             // Release the memory for the jstrings
-            env->ReleaseStringUTFChars(lowFile_topic, fileTopicFinal);
+            env->ReleaseStringUTFChars(lowFileTopic, fileTopicFinal);
             env->ReleaseStringUTFChars(lowTopic, topicFinal);
             env->DeleteLocalRef(lowFileTopic);
             env->DeleteLocalRef(lowTopic);
