@@ -5,7 +5,7 @@
 
 // Header files of java files using this native function
 #include "makequiz_MakeQuiz.h"
-#include "makequiz_review.h"
+#include "makequiz_ReviewQuiz.h"
 
 using namespace std;
 
