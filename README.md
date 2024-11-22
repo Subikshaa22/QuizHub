@@ -3,6 +3,16 @@ A quiz making and attempting platform created as a course project for C++ and Ja
 
 
 # Contributors
+- Ananya Vundavalli
+- Harshita Bansal
+- Kavya Gupta
+- Nainika Agrawal
+- Subikshaa Sakthivel
+- Talla Likitha Reddy
+- Vriddhi Agrawal
+
+
+
 
 # Goal
 
