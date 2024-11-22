@@ -1,34 +1,30 @@
-package Quiz;
-
 import java.util.*;
 
 public abstract class Quiz {
+    // Define attributes of a quiz 
     protected String ID;
     protected String name;
     protected String topic;
-    protected String date_of_creation;
-    protected double avg_score;
-    protected double avg_time;
+    protected String dateOfCreation;
+    protected double avgScore;
+    protected double avgTime;
     protected String filepath;
     protected List<Question> questions = new ArrayList<>();
-    protected int time_allotted;
-    protected int number_of_questions;
+    protected int timeAllotted;
+    protected int numberOfQuestions;
     protected String username;
-    //protected int Number_of_options;
 
     // Default constructor
     public Quiz() {
         this.ID = ""; // Initialize ID to an empty string
         this.name = ""; // Initialize name to an empty string
         this.topic = ""; // Initialize topic to an empty string
-        this.date_of_creation = ""; // Initialize date_of_creation to an empty string
-        this.avg_score = 0; // Initialize avg_score to an empty string
-        this.avg_time = 0; // Initialize avg_time to an empty string
+        this.dateOfCreation = ""; // Initialize date_of_creation to an empty string
+        this.avgScore = 0; // Initialize avg_score to an empty string
+        this.avgTime = 0; // Initialize avg_time to an empty string
         this.filepath = ""; // Initialize filepath to an empty string
-
-        // Initialize integer attributes to their default values
-        this.time_allotted = 0; // Default to 0
-        this.number_of_questions = 0; // Default to 0
+        this.timeAllotted = 0; // Default to 0
+        this.numberOfQuestions = 0; // Default to 0
         this.username = ""; // Initialize username to an empty string
     }
 
@@ -38,46 +34,27 @@ public abstract class Quiz {
         this.ID = ID;
         this.name = name;
         this.topic = topic;
-        this.date_of_creation = date_of_creation;
-        this.avg_score = avg_score;
-        this.avg_time = avg_time;
-        this.time_allotted = time_allotted;
-        this.number_of_questions = noOfQuestions;
+        this.dateOfCreation = date_of_creation;
+        this.avgScore = avg_score;
+        this.avgTime = avg_time;
+        this.timeAllotted = time_allotted;
+        this.numberOfQuestions = noOfQuestions;
     }
 
 
-    // getter for thw whole object of quesiton
-
-    // Getter and Setter for time_allotted
+    // Getter methods 
     public int getTimeAllotted() {
-        return time_allotted;
+        return timeAllotted;
     }
 
-    public void setTimeAllotted(int time_allotted) {
-        this.time_allotted = time_allotted;
-    }
-
-    // Getter and Setter for number_of_questions
     public int getNumberOfQuestions() {
-        return number_of_questions;
+        return numberOfQuestions;
     }
 
-    public void setNumberOfQuestions(int number_of_questions) {
-        this.number_of_questions = number_of_questions;
-    }
-
-    // Getter and Setter for username
     public String getUsername() {
         return username;
     }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /// ===============================================
-
-    // Getters
+    
     public String getID() {
         return ID;
     }
@@ -91,15 +68,15 @@ public abstract class Quiz {
     }
 
     public String getDateOfCreation() {
-        return date_of_creation;
+        return dateOfCreation;
     }
 
     public double getAvgScore() {
-        return avg_score;
+        return avgScore;
     }
 
     public double getAvgTime() {
-        return avg_time;
+        return avgTime;
     }
 
     public String getFilepath() {
@@ -110,7 +87,19 @@ public abstract class Quiz {
         return questions;
     }
 
-    // Setters
+    // Setters 
+    public void setTimeAllotted(int time_allotted) {
+        this.timeAllotted = time_allotted;
+    }  
+
+    public void setNumberOfQuestions(int number_of_questions) {
+        this.numberOfQuestions = number_of_questions;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void setID(String ID) {
         this.ID = ID;
     }
@@ -124,15 +113,15 @@ public abstract class Quiz {
     }
 
     public void setDateOfCreation(String date_of_creation) {
-        this.date_of_creation = date_of_creation;
+        this.dateOfCreation = date_of_creation;
     }
 
     public void setAvgScore(double avg_score) {
-        this.avg_score = avg_score;
+        this.avgScore = avg_score;
     }
 
     public void setAvgTime(double avg_time) {
-        this.avg_time = avg_time;
+        this.avgTime = avg_time;
     }
 
     public void setFilepath(String filepath) {
@@ -143,16 +132,18 @@ public abstract class Quiz {
         this.questions = questions;
     }
 
+    // Function to print the details of the quiz object 
     @Override
     public String toString() {
         return "ID: " + ID + ", Name: " + name + ", Topic: " + topic + 
-               ", Date of Creation: " + date_of_creation + 
-               ", Average Score: " + avg_score + " marks" + 
-               ", Average Time Taken: " + avg_time + " mins" + 
-               ", Time Allotted: " + time_allotted + " mins";
+               ", Date of Creation: " + dateOfCreation + 
+               ", Average Score: " + avgScore + " marks" + 
+               ", Average Time Taken: " + avgTime + " mins" + 
+               ", Time Allotted: " + timeAllotted + " mins";
     }
-
-    public void addQuestions(Question question) { // Added this -Ananya
+    
+    // Function to add Questions to a quiz 
+    public void addQuestions(Question question) { 
         this.questions.add(question);
     }
 }
