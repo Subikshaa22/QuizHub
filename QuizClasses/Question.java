@@ -1,4 +1,4 @@
-package Quiz;
+package QuizClasses;
 
 import java.util.Map;
 

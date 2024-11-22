@@ -1,6 +1,7 @@
 package attemptedquiz;
-import Quiz.Quiz;
 import java.util.*;
+
+import QuizClasses.Quiz;
 
 public class AttemptQuiz extends Quiz {
     private String dateAttempted;

@@ -2,7 +2,6 @@ package quizEngine;
 import users.User;
 import users.ProfileHistory;
 import attemptedquiz.AttemptedQuiz;
-import Quiz.Quiz;
 import makequiz.MakeQuiz;
 
 import java.io.BufferedReader;
@@ -11,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+
+import QuizClasses.Quiz;
 
 public class QuizPlatform {
     private static final String USERS_FILE = "users.csv";

@@ -1,76 +1,80 @@
 package makequiz;
-import Quiz.Question;
+
+import QuizClasses.Question;
 import java.util.*;
 
-// To make a question and add it to the quiz class
-public class enterquestion {
+// Class to handle adding questions to a quiz
+public class EnterQuestion {
 
+    // Hold the newQuiz object created in MakeQuiz 
     private ExistingQuizzes refQuiz;
 
-    //Setter
-    public void setQobject(ExistingQuizzes refQuiz)
-    {
-      this.refQuiz = refQuiz;
-   }
-
-    // ------------------------------------------- Ananya
-
-    //to take user input to set question details
+    // Static Scanner instance for taking user input
     static Scanner scanner = new Scanner(System.in);
+    
+    // Default Constructor 
+    public EnterQuestion() {
+    }
 
+    // Method to set the reference to the quiz object
+    public void setQobject(ExistingQuizzes refQuiz) {
+      this.refQuiz = refQuiz;
+    }
 
-    public void EnterQuestions()
-    {
-        boolean stop_now=false;
-        while(!stop_now){
+    // Method to repeatedly allow the user to add questions until they choose to stop
+    public void EnterQuestions() {
+        boolean stopNow = false;
+        while(!stopNow) {
+            // Add a new question 
             EnterNewQuestion();
             System.out.println("If you are done entering questions Enter Yes, else enter No");
-            String Stop = scanner.nextLine();
-            if(Stop.equals("Yes")){
-                stop_now=true;
+            String stop = scanner.nextLine();
+            if(stop.equals("Yes")){
+                stopNow = true;
             }
         }
     }
-    public void EnterNewQuestion() {
 
-        // Create question object
+    // Method to enter a new question 
+    public void EnterNewQuestion() {
+        // Create a new Question object
         Question newQuestion = new Question();
-        // Storing option labels in a separate file so that the user enters options with option labels going alphabetically
+
+        // Store option labels to ensure they follow alphabetical order
         List<Character> labels = new ArrayList<Character>();
-        //to store the options
         Map<Character, String> options = new HashMap<>();
 
-        String Question_text = "";
-        System.out.println("Enter classes.Question text :");
-
-    //save or edit inside and enter question outside
+        // Enter the content of the Question
+        String questionText = "";
+        System.out.println("Enter Question text :");
+ 
+        // Loop for entering/editing the question text
         while (true) {
             String text = scanner.nextLine();
-            // set text
-
-            // Check if the user wants to freeze the question
             if (text.equalsIgnoreCase("freeze")) {
                 System.out.println("classes.Question has been frozen.");
                 break;
             }
-            else{
-                Question_text=text;
+            else {
+                questionText = text;
             }
             System.out.println("To change question text enter question text");
             System.out.println("Enter freeze to Freeze the classes.Question");
         }
 
-        String Option_Input;
+        // Loop for entering options
+        String optionInput;
         System.out.println("Enter Option label followed by the option text (Eg. A text):");
         while (true) {
-            Option_Input = scanner.nextLine();
+            optionInput = scanner.nextLine();
+
             // Check if the user wants to freeze the options
-            if (Option_Input.equalsIgnoreCase("freeze")) {
+            if (optionInput.equalsIgnoreCase("freeze")) {
                 System.out.println("Options have been frozen.");
                 break;
             }
 
-            String[] parts = Option_Input.split(" ", 2);
+            String[] parts = optionInput.split(" ", 2);
             if (parts.length == 2) {
                 char Option_Label = parts[0].toUpperCase().charAt(0); // Normalize to Uppercase
                 String Option_Text = parts[1];
@@ -98,16 +102,13 @@ public class enterquestion {
             } else {
                 System.out.println("Invalid input. Please enter an option label followed by option text with a space in between.");
             }
-
-
         }
 
+        // Enter the correct answer
         char CorrectAnswer = '\0';
         System.out.println("Enter Correct Answer(Eg. A) :");
         while (true) {
             String CorrectAnswerInput = scanner.nextLine();
-
-            // set text
 
             // Check if the user wants to freeze the correct answer
             if (CorrectAnswerInput.equalsIgnoreCase("freeze")) {
@@ -116,39 +117,44 @@ public class enterquestion {
             }
             if (CorrectAnswerInput.length() == 1) {
                 CorrectAnswer = Character.toUpperCase(CorrectAnswerInput.charAt(0));
-
-                if (options.containsKey(CorrectAnswer)) {
+                if (options.containsKey(CorrectAnswer)) {  // Validate against entered options
                     System.out.println("Enter Correct Answer to change");
                     System.out.println("Enter freeze to Freeze the Correct Answer");
-                    ;
                 } else {
                     System.out.println("Invalid correct answer. Please choose from the entered options.");
                 }
-
-            } else {
+            } 
+            else {
                 System.out.println("Invalid input. Enter a single character as the correct answer.");
             }
         }
-        int marksForCorrect=1;
-        int marksForWrong=0;
+
+        // Enter marks for correct answers, initialized with default value
+        int marksForCorrect = 1;
         System.out.println("Enter marks for the correct answer (default is 1)\nEnter freeze to keep the default value:");
         while (true) {
             String marksGiven = scanner.nextLine();
             // Check if the user wants to freeze the correct answer
             if (marksGiven.equalsIgnoreCase("freeze")) {
-                System.out.println("marks for correct answer has been frozen.");
+                System.out.println("Marks for correct answer has been frozen.");
                 break;
             }
-            int cMarks=Integer.parseInt(marksGiven);
-            if (cMarks>=1) {
-                marksForCorrect = cMarks;
-                System.out.println("Enter marks for the correct answer to change");
-                System.out.println("Enter freeze to Freeze the Correct Answer");
-            }
-            else {
+            try {
+                int marks = Integer.parseInt(marksGiven);
+                if (marks >= 1) {
+                    marksForCorrect = marks;
+                    System.out.println("Enter marks for the correct answer to change");
+                    System.out.println("Enter freeze to Freeze the Correct Answer");
+                } else {
+                    System.out.println("Marks must be >= 1.");
+                }
+            } catch (NumberFormatException e) {
                 System.out.println("Invalid input. Please choose an integer >=1 or type freeze.");
             }
         }
+
+        // Enter marks for wrong answers
+        int marksForWrong = 0;
         System.out.println("Enter marks for the wrong answer (default is 0)\nEnter freeze to keep the default value:");
         while (true) {
             String marksGiven = scanner.nextLine();
@@ -157,24 +163,28 @@ public class enterquestion {
                 System.out.println("marks for wrong answer has been frozen.");
                 break;
             }
-            int wMarks=Integer.parseInt(marksGiven);
-            if (wMarks<=0) {
-                marksForWrong = wMarks;
-                System.out.println("Enter marks for the wrong answer to change");
-                System.out.println("Enter freeze to Freeze the Correct Answer");
-            }
-            else {
-                System.out.println("Invalid input. Please choose an integer <=0 or type freeze.");
+            try {
+                int marks = Integer.parseInt(marksGiven);
+                if (marks <= 0) {
+                    marksForWrong = marks;
+                    System.out.println("Enter marks for the wrong answer to change");
+                    System.out.println("Enter freeze to Freeze the Correct Answer");
+                } else {
+                    System.out.println("Invalid input. Please choose an integer <=0 or type freeze.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Enter an integer <= 0 or type 'freeze'.");
             }
         }
 
-        // Set question details to classes.Question class
-        newQuestion.setQuestionText(Question_text);
+        // Set question details to Question object 
+        newQuestion.setQuestionText(questionText);
         newQuestion.setCorrectOption(CorrectAnswer);
         newQuestion.setOptions(options);
         newQuestion.setMarksForCorrect(marksForCorrect);
         newQuestion.setMarksForWrong(marksForWrong);
-        //Add question to the quiz class
+
+        // Add question to the quiz Object 
         refQuiz.addQuestions(newQuestion);
     }
 

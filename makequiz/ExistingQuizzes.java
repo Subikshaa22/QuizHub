@@ -1,20 +1,9 @@
 package makequiz;
 
-import Quiz.Quiz;
-
-public class ExistingQuizzes extends Quiz
-{
+// Quizez that have been made 
+public class ExistingQuizzes extends QuizClasses.Quiz {
     
-    private int score;
-
-    //add constructotr 
-    
-    //getter setter
-    public int getScore(){
-        return score;
-    }
-
-    public void setScore(int score){
-        this.score=score;
+    // Default Constructor 
+    public ExistingQuizzes() {
     }
 }

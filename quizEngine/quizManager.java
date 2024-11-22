@@ -1,9 +1,9 @@
 package quizEngine;
 
-import Quiz.Quiz;
-
 import java.util.*;
 import java.util.stream.Collectors;
+
+import QuizClasses.Quiz;
 
 public class quizManager {
 

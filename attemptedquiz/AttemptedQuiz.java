@@ -1,27 +1,11 @@
 package attemptedquiz;
-import Quiz.Quiz;
-import Quiz.Question;
-
 import quizEngine.QuizPlatform;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.regex.*;
+import QuizClasses.Question;
+import QuizClasses.Quiz;
 
 public class AttemptedQuiz extends Quiz {
 

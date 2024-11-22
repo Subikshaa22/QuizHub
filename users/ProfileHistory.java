@@ -2,11 +2,11 @@ package users;
 
 import attemptedquiz.AttemptQuiz;
 import attemptedquiz.AttemptedQuiz;
-import Quiz.Question;
-import Quiz.Quiz;
-
 
 import java.util.*;
+
+import QuizClasses.Question;
+import QuizClasses.Quiz;
 
 public class ProfileHistory {
     private User user;  // classes.User whose history we are tracking
