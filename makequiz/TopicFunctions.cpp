@@ -6,54 +6,55 @@
 #include <exception>
 #include <algorithm>
 #include <cctype>
-#include<cstring>
+#include <cstring>
+
+// Include the headers of the java files calling these functions 
 #include "makequiz_MakeQuiz.h"
 #include "makequiz_review.h"
 
 using namespace std;
 
-string filename = "topics.txt";
-
 extern "C" {
 
-    // Function to convert std::string to jstring and convert to lowercase
-
+    // Function to convert string to lowercase
     JNIEXPORT jstring JNICALL Java_makequiz_MakeQuiz_convertToLowerCase(JNIEnv *env, jobject obj, jstring input)
     {
-        // Step 1: Convert jstring to std::string
+        // Convert jstring to cpp string
         const char* utfChars = env->GetStringUTFChars(input, nullptr);
         std::string str(utfChars);
 
-        // Step 2: Convert the string to lowercase using std::transform
+        // Convert the entire cpp string to lowercase using std::transform
         std::transform(str.begin(), str.end(), str.begin(),
                        [](unsigned char c) { return std::tolower(c); });
 
-        // Step 3: Convert std::string back to jstring
+        // Convert cpp string back to jstring
         jstring result = env->NewStringUTF(str.c_str());
 
         // Release the original jstring memory
         env->ReleaseStringUTFChars(input, utfChars);
 
+        // Return the converted string 
         return result;
     }
 
     // Function to display the topics from the file
     JNIEXPORT jint JNICALL Java_makequiz_MakeQuiz_displayTopics(JNIEnv *env, jobject obj)
     {
-        
-        // Function to load data from topics
+        // Open the file for reading 
         ifstream infile("Topics.csv");
 
         // Check if file exists and can be opened
         if(!infile.is_open())
-            throw runtime_error("Error: Unable to open. Please ensure the file exists.");
+            throw runtime_error("Error: Unable to open Topics.csv. Please ensure the file exists.");
 
+        // Store each line from file 
         string line;
 
         // Read and display the topics
         while(getline(infile, line)) {
+            // Skip empty lines, if any
             if(line.empty())
-                continue; // Skip empty lines, if any
+                continue; 
 
             // Extract details from the file
             istringstream iss(line);
@@ -61,81 +62,80 @@ extern "C" {
             getline(iss, topic, ','); // Read until the first comma
             cout << topic << endl;
         }
-        return 1;
+        return 1; // Successfully read the topics 
     }
 
-    // Function to check if a topic exists in the file
-    JNIEXPORT jboolean JNICALL Java_makequiz_MakeQuiz_CheckIfTopicExists(JNIEnv *env, jobject obj, jstring topic)
+    // Function to check if a topic exists in the database 
+    JNIEXPORT jboolean JNICALL Java_makequiz_MakeQuiz_checkIfTopicExists(JNIEnv *env, jobject obj, jstring topic)
     {
         bool exists = false;
         string line;
 
         // Check if the file is opening
         ifstream infile("Topics.csv");
-
         if(!infile.is_open())
             throw runtime_error("Error: Unable to open. Please ensure the file exists.");
 
         // Read and display the topics
         while(getline(infile, line)) {
+            // Skip empty lines, if any
             if(line.empty())
-                continue; // Skip empty lines, if any
+                continue; 
 
             // Extract details from the file
             istringstream iss(line);
-            string file_topic;
-            getline(iss, file_topic, ','); // Read until the first comma
+            string fileTopic;
+            getline(iss, fileTopic, ','); // Read until the first comma
 
             // Convert both topics to lowercase to avoid case sensitivity
-            jstring low_file_topic = Java_makequiz_MakeQuiz_convertToLowerCase(env, obj, env->NewStringUTF(file_topic.c_str()));
-            jstring low_topic = Java_makequiz_MakeQuiz_convertToLowerCase(env, obj, topic);
+            jstring lowFileTopic = Java_makequiz_MakeQuiz_convertToLowerCase(env, obj, env->NewStringUTF(fileTopic.c_str()));
+            jstring lowTopic = Java_makequiz_MakeQuiz_convertToLowerCase(env, obj, topic);
 
             // Convert the result jstrings back to C++ strings to compare
-            const char* file_topic_final = env->GetStringUTFChars(low_file_topic, nullptr);
-            const char* topic_final = env->GetStringUTFChars(low_topic, nullptr);
+            const char* fileTopicFinal = env->GetStringUTFChars(lowFileTopic, nullptr);
+            const char* topicFinal = env->GetStringUTFChars(lowTopic, nullptr);
 
-            // Compare the lowercase strings
-            if (strcmp(topic_final, file_topic_final) == 0) {
+            // Compare the lowercase strings to check if topic is there 
+            if (strcmp(topicFinal, fileTopicFinal) == 0) {
                 exists = true;
                 break;
             }
 
             // Release the memory for the jstrings
-            env->ReleaseStringUTFChars(low_file_topic, file_topic_final);
-            env->ReleaseStringUTFChars(low_topic, topic_final);
-            env->DeleteLocalRef(low_file_topic);
-            env->DeleteLocalRef(low_topic);
+            env->ReleaseStringUTFChars(lowFile_topic, fileTopicFinal);
+            env->ReleaseStringUTFChars(lowTopic, topicFinal);
+            env->DeleteLocalRef(lowFileTopic);
+            env->DeleteLocalRef(lowTopic);
         }
         return exists;
     }
 
     // Function to save a topic to the file
-    JNIEXPORT jint JNICALL Java_makequiz_MakeQuiz_SaveTopic(JNIEnv *env, jobject obj, jstring topic)
+    JNIEXPORT jint JNICALL Java_makequiz_MakeQuiz_saveTopic(JNIEnv *env, jobject obj, jstring topic)
     {
-        // Convert jstring topic to std::string
-        const char* topic_chars = env->GetStringUTFChars(topic, nullptr);
-        string topic_str(topic_chars);
+        // Convert jstring topic to cpp string
+        const char* topicChars = env->GetStringUTFChars(topic, nullptr);
+        string topicStr(topicChars);
 
-        // Open the file for writing
+        // Open the file for writing, in append mode 
         ofstream outfile("Topics.csv", ios::app);
 
         // Check if the file was successfully opened, exit if cannot be opened
-        if(!outfile.is_open()) 
-        {
+        if(!outfile.is_open()) {
             cout << "Error: Unable to write to topics.txt" << endl;
             return 0; // Failure
         }
-
+        
         // Write topic to file
-        outfile << topic_str << endl;
+        outfile << topicStr << endl;
 
         // Close the file after writing
         outfile.close();
 
         // Release the memory for the jstring
-        env->ReleaseStringUTFChars(topic, topic_chars);
+        env->ReleaseStringUTFChars(topic, topicChars);
 
-        return 1; // Success
+        return 1; // Successfully written the topic to the file 
     }
 }
 
