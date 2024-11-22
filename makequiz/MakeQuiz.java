@@ -3,136 +3,163 @@ import java.util.*;
 
 public class MakeQuiz {
 
+    // Static Scanner instance for taking user input
     static Scanner scanner = new Scanner(System.in);
     
-    // Create a quiz object
+    // Create a Quiz Object representing the new Quiz being created
+    // Each MakeQuiz instance will have its own newQuiz instance 
     ExistingQuizzes newQuiz = new ExistingQuizzes();
 
-    public native boolean CheckIfTopicExists(String topic);
-    public native int SaveTopic(String topic);
+    // Declare the native functions  to interact with C++ library
+    public native boolean checkIfTopicExists(String topic);
+    public native int saveTopic(String topic);
     public native int displayTopics();
     public native String getCurrentDate();
-    static { System.loadLibrary("mylib"); }
-
-    public static void ananya(MakeQuiz remove_error)
-    {
-        enterquestion ananya = new enterquestion();
-        ananya.setQobject(remove_error.newQuiz);  // Access newQuiz through remove_error instance
-        ananya.EnterQuestions();
-        System.out.println(remove_error.newQuiz.getQuestions().size());
+   
+    // Load the native library to access the C++ functions 
+    static { 
+        try {
+            System.loadLibrary("mylib");
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Error loading native library: " + e.getMessage());
+            System.exit(1);
+        }
     }
 
-    public static void kavya(MakeQuiz remove_error)
-    {
-        System.out.println(remove_error.newQuiz.getQuestions().size());
-        edit_no_par kavya = new edit_no_par();
-        kavya.setQobject(remove_error.newQuiz);  // Access newQuiz through remove_error instance
-        kavya.editQuestion();
-
+    // Method to add questions to the quiz.
+    public static void callEnterQuestion(MakeQuiz makeQuizInstance) {
+        // Access newQuiz through makeQuizInstance instance and the functions from enterQuestion class
+        EnterQuestion callEnterQuestion = new EnterQuestion();
+        callEnterQuestion.setQobject(makeQuizInstance.newQuiz);  
+        callEnterQuestion.EnterQuestions();
     }
 
-    public static void nainika(MakeQuiz remove_error, int quizID,String name,String topic, String date)
-    {
-        review nainika = new review();
-        nainika.setQobject(remove_error.newQuiz);  // Access newQuiz through remove_error instance
-        nainika.reviewq(quizID,name,topic, date);
+    // Method to edit existing questions in the quiz.
+    public static void callEditQuestion(MakeQuiz makeQuizInstance) {
+        // Access newQuiz through makeQuizInstance instance and the functions from editQuestion class
+        EditQuestion callEditQuestion = new EditQuestion();
+        callEditQuestion.setQobject(makeQuizInstance.newQuiz);
+        callEditQuestion.editQuestion();
     }
 
+    // Method to review the quiz before finalizing it.
+    public static void callReview(MakeQuiz makeQuizInstance, int quizID,String name,String topic, String date) {
+        // Access newQuiz through makeQuizInstance instance and the functions from reviewQuiz class
+        ReviewQuiz callReview = new ReviewQuiz();
+        callReview.setQobject(makeQuizInstance.newQuiz); 
+        callReview.reviewq(quizID, name, topic, date);
+    }
 
     public static void main(String[] args) {
-        String topic="";
+        String topic = ""; // Variable to store the topic of the quiz
 
+        // Outer loop for selecting or creating a topic
         OUTER: for (int i = 0; i < 5; i++) {
             System.out.println("The following topics are available:");
-            MakeQuiz qz = new MakeQuiz();
-            qz.displayTopics();
+            
+            // Create a new instance of MakeQuiz to access cpp function to read and display the available topics 
+            MakeQuiz quizInstance = new MakeQuiz();
+            quizInstance.displayTopics();
+
             System.out.println("Choose an option:");
             System.out.println("1. Select a topic ");
             System.out.println("2. Create a new topic ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-
+            System.out.println("Enter 1/2: ");
+            
+            // Check if an integer is input 
+            int choice = -1;
+            boolean validInput = false;
+            while (!validInput) {
+                try {
+                    System.out.print("Enter a number: ");
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline character 
+                    validInput = true; // If no exception, input is valid
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
+            
+ 
+            // Make decisions based on users choice 
             switch (choice) {
-                case 1: // select a topic
-                {
+                case 1: {  // Select a topic already in database 
                     System.out.println("Enter topic selected: ");
                     topic = scanner.nextLine();
+
+                    // Check if the topic exists using native method
                     boolean exists = true;
-                   
-                    // call cpp fxn to check if exists or not instead of using true, send topic as
-                    exists = qz.CheckIfTopicExists(topic);
-                    if (exists == true)
-                        break OUTER;
+                    exists = quizInstance.checkIfTopicExists(topic);
+                    if (exists == true) {
+                        break OUTER; // If topic exists, exit the loop
+                    }
                     else {
                         System.out.println("Invalid Topic");
-                        continue OUTER;
+                        continue OUTER; // Continue to next iteration if topic doesn't exist 
                     }
                 }
-                case 2: // Create a new topic
-                {
+                case 2: { // Create a new topic and add it to database 
                     System.out.println("Enter new topic: ");
                     topic = scanner.nextLine();
                     
-                    // call cpp save to file with topic as parameter
-                    int done = qz.SaveTopic(topic);
-                    break OUTER;
+                    // Save the new topic using native method
+                    quizInstance.saveTopic(topic);
+                    break OUTER; // Exit the loop after creating a new topic
                 }
                 default:
                     System.out.println("Invalid choice");
                     break;
             }
-        }
+        } // End of OUTER 
 
-        // Generate a random quiz id and display it to user
-        Random random = new Random();
-        int quizID = random.nextInt(Integer.MAX_VALUE); // any positive int
-        System.out.println(quizID + " is your classes.Quiz id! ");
-        String id = String.valueOf(quizID);
+        // Generate a random unque quiz ID and display it to user
+        String quizID = UUID.randomUUID().toString();
+        System.out.println(quizID + " is your Quiz id! ");
+        
+        // Get the current date using the native method
+        MakeQuiz quizInstance = new MakeQuiz();
+        String dateCreated = quizInstance.getCurrentDate();
+        System.out.println("Today's date is :" + dateCreated);
 
-        // call cpp fxn -- Take date created of quiz 
-        MakeQuiz qz = new MakeQuiz();
-        String date_created = qz.getCurrentDate();
-
-        System.out.println("Date is :" + date_created);
-
-        // Start Forming classes.Quiz
-        System.out.println("Enter classes.Quiz name:");
+        // Start Forming Quiz 
+        System.out.println("Enter Quiz name:");
         String name = scanner.nextLine();
-        boolean finish_making_quiz = false;
 
-        // Create an instance of makequiz.MakeQuiz
-        MakeQuiz remove_error = new MakeQuiz();
+        // Boolean flag to track if the quiz creation is complete
+        boolean finishMakingQuiz = false;
 
-        N: while (finish_making_quiz != true) {
+        // Create an instance of MakeQuiz
+        MakeQuiz makeQuizInstance = new MakeQuiz();
+
+        // Loop to handle quiz creation options
+        COUTER: while (finishMakingQuiz != true) {
             System.out.println("Choose an Option:");
-            System.out.println("1. Enter new classes.Question");
-            System.out.println("2. Edit Existing classes.Question");
+            System.out.println("1. Enter new Question");
+            System.out.println("2. Edit Existing Question");
             System.out.println("3. Finish Questions");
+            System.out.println("Enter 1/2/3: ");
             int choice = scanner.nextInt();
 
             switch (choice) {
                 case 1: {
-                    // call ananya
-                    ananya(remove_error );
+                    // Add a new Question
+                    callEnterQuestion(makeQuizInstance );
                     break;
                 }
-                // enter new question
                 case 2: {
-                    // call kavya
-                   kavya(remove_error );
-                    break;// edit questions ka fxn
+                    // Edit a existing question 
+                   callEditQuestion(makeQuizInstance);
+                    break;
                 }
                 case 3: {
-                    // call makequiz.review fxn
-                    nainika(remove_error, quizID,name,topic, date_created);
-                    break N; // makequiz.review fxn - time and to esit or discard or save
-
+                    // Review the quiz and save/discard it 
+                    callReview(makeQuizInstance, quizID,name,topic, dateCreated);
+                    break COUTER; 
                 }
                 default:
                     System.out.println("Invalid choice , try again! ");
             }
-        }
-    }
-}
-// end of class
-
+        } // End of COUTER
+    } // End of main
+} // End of class
