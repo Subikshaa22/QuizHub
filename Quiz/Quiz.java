@@ -1,4 +1,6 @@
+package QuizClasses;
 import java.util.*;
+
 
 public abstract class Quiz {
     // Define attributes of a quiz 
@@ -9,7 +11,7 @@ public abstract class Quiz {
     protected double avgScore;
     protected double avgTime;
     protected String filepath;
-    protected List<Question> questions = new ArrayList<>();
+    public List<Question> questions = new ArrayList<>();
     protected int timeAllotted;
     protected int numberOfQuestions;
     protected String username;
