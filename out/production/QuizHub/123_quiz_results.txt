@@ -1,5 +1,0 @@
-Quiz.Quiz ID: 2054283849 | Quiz.Quiz Attempted: Sat Nov 16 22:30:09 IST 2024
-am i ok?,{A=2, B=yes},A, A,4
-is kavya ok?,{A=1},B, A,-2
-------------------------------------------------
-
