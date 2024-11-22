@@ -138,4 +138,3 @@ extern "C" {
         return 1; // Successfully written the topic to the file 
     }
 }
-
