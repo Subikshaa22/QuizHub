@@ -43,11 +43,13 @@ public class MakeQuiz {
     }
 
     // Method to review the quiz before finalizing it.
-    public static void callReview(MakeQuiz makeQuizInstance, int quizID,String name,String topic, String date) {
+    public static void callReview(MakeQuiz makeQuizInstance, String quizID,String name,String topic, String date) {
         // Access newQuiz through makeQuizInstance instance and the functions from reviewQuiz class
         ReviewQuiz callReview = new ReviewQuiz();
         callReview.setQobject(makeQuizInstance.newQuiz); 
-        callReview.reviewq(quizID, name, topic, date);
+        // Convert the id to a integer and send it to function
+        int quizIdInt = Integer.parseInt(quizID);
+        callReview.reviewQ(quizIdInt, name, topic, date);
     }
 
     public static void main(String[] args) {
@@ -139,8 +141,22 @@ public class MakeQuiz {
             System.out.println("2. Edit Existing Question");
             System.out.println("3. Finish Questions");
             System.out.println("Enter 1/2/3: ");
-            int choice = scanner.nextInt();
-
+            
+            // Check if an integer is input 
+            int choice = -1;
+            boolean validInput = false;
+            while (!validInput) {
+                try {
+                    System.out.print("Enter a number: ");
+                    choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline character 
+                    validInput = true; // If no exception, input is valid
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a number.");
+                    scanner.nextLine(); // Clear the invalid input
+                }
+            }
+             
             switch (choice) {
                 case 1: {
                     // Add a new Question
@@ -154,7 +170,7 @@ public class MakeQuiz {
                 }
                 case 3: {
                     // Review the quiz and save/discard it 
-                    callReview(makeQuizInstance, quizID,name,topic, dateCreated);
+                    callReview(makeQuizInstance, quizID, name,topic, dateCreated);
                     break COUTER; 
                 }
                 default:
