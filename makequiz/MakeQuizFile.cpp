@@ -12,7 +12,7 @@ using namespace std;
 
 extern "C" {
 
-    JNIEXPORT jint Java_makequiz_review_MakeIQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename, jint id, jstring name, jstring topic, jstring username, jint timeAllo, jint nq, jstring date)
+    JNIEXPORT jint Java_makequiz_ReviewQuestion_MakeIQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename, jint id, jstring name, jstring topic, jstring username, jint timeAllo, jint nq, jstring date)
     {
         //cout<<"hello in makefilecpp"<<endl;
 
@@ -113,7 +113,7 @@ extern "C" {
 
 
 
-    JNIEXPORT jint JNICALL Java_makequiz_review_AddToPrevQuizFile(JNIEnv *env, jobject obj, jobject newQuiz)
+    JNIEXPORT jint JNICALL Java_makequiz_ReviewQuestion_AddToPrevQuizFile(JNIEnv *env, jobject obj, jobject newQuiz)
     {
 
         string filename = "PreviousQuizzez.csv"; 
@@ -186,7 +186,7 @@ extern "C" {
         return 0;  
     }
 
-    JNIEXPORT jint JNICALL Java_makequiz_review_WriteToQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename)
+    JNIEXPORT jint JNICALL Java_makequiz_ReviewQuestion_WriteToQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename)
     {
         // Convert the jstring filename to a C++ string
         const char* filename_cstr = env->GetStringUTFChars(filename, 0);
