@@ -5,6 +5,7 @@
 #include <list>
 #include <string>
 
+// Include the header files of the java files that are using these functions 
 #include "makequiz_MakeQuiz.h"
 #include "makequiz_review.h"
 
@@ -12,10 +13,9 @@ using namespace std;
 
 extern "C" {
 
-    JNIEXPORT jint Java_makequiz_ReviewQuestion_MakeIQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename, jint id, jstring name, jstring topic, jstring username, jint timeAllo, jint nq, jstring date)
+    // Function that makes a quiz file whose name is the quizID
+    JNIEXPORT jint Java_makequiz_ReviewQuiz_MakeIQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename, jint id, jstring name, jstring topic, jstring username, jint timeAllo, jint nq, jstring date)
     {
-        //cout<<"hello in makefilecpp"<<endl;
-
         // Convert jstring filename to C++ string --correct
         const char *filenameChars = env->GetStringUTFChars(filename, NULL);
         string cppFilename(filenameChars);
@@ -40,6 +40,7 @@ extern "C" {
         env->CallVoidMethod(newQuiz, setTimeAllottedMethod, timeAllo);
         env->CallVoidMethod(newQuiz, setNumberOfQuestionsMethod, nq);
 
+        // Check if any method is missing 
         if (!setIDMethod || !setNameMethod || !setTopicMethod || !setUsernameMethod || !setTimeAllottedMethod || !setNumberOfQuestionsMethod || !setDateMethod) {
             cerr << "Error: Could not find setter methods" << endl;
             return -1;
@@ -48,6 +49,7 @@ extern "C" {
         // Open file for writing
         ofstream outfile(cppFilename, ios::out);
         
+        // Check if file has opened correctly 
         if (!outfile.is_open()) {
             cerr << "Error opening file for writing." << std::endl;
             return -1;  
@@ -90,62 +92,43 @@ extern "C" {
         env->ReleaseStringUTFChars(usernameVal, usernameStr);
         env->ReleaseStringUTFChars(dateOfCreationVal, dateOfCreationStr);
 
-        //cout<<"file made"<<endl;
-
         // Close the file
         outfile.close(); 
 
-        return 0; 
+        return 0; // Successfully created and written to quizID.csv 
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    JNIEXPORT jint JNICALL Java_makequiz_ReviewQuestion_AddToPrevQuizFile(JNIEnv *env, jobject obj, jobject newQuiz)
+    // Function to add the quiz details to the previousquizzez file 
+    JNIEXPORT jint JNICALL Java_makequiz_ReviewQuiz_AddToPrevQuizFile(JNIEnv *env, jobject obj, jobject newQuiz)
     {
-
+        // The file storing list of all quizzez made till now 
         string filename = "PreviousQuizzez.csv"; 
 
         // Open the file for writing in append mode
         ofstream outfile(filename, ios::app);
 
         // Check if the file was successfully opened, exit if cannot be opened
-        if (!outfile.is_open())
-        {
-            cerr << "Error: Unable to write to " << filename << endl;
+        if (!outfile.is_open()) {
+            cout << "Error: Unable to write to " << filename << endl;
             return -1;  
         }
 
         // Get newQuiz object from obj in JNI context
         jclass quizClass = env->GetObjectClass(newQuiz);
 
-       // Get getters from the Java object
-               jmethodID getID = env->GetMethodID(quizClass, "getID", "()I");
-               jmethodID getName= env->GetMethodID(quizClass, "getName", "()Ljava/lang/String;");
-               jmethodID getTopic = env->GetMethodID(quizClass, "getTopic", "()Ljava/lang/String;");
+        // Get getters from the Java object
+        jmethodID getID = env->GetMethodID(quizClass, "getID", "()I");
+        jmethodID getName= env->GetMethodID(quizClass, "getName", "()Ljava/lang/String;");
+        jmethodID getTopic = env->GetMethodID(quizClass, "getTopic", "()Ljava/lang/String;");
+        jmethodID getDate= env->GetMethodID(quizClass, "getDateOfCreation", "()Ljava/lang/String;");
+        jmethodID getAvgScore = env->GetMethodID(quizClass, "getAvgScore", "()D");
+        jmethodID getAvgTime = env->GetMethodID(quizClass, "getAvgTime", "()D");
+        jmethodID getTimeAllotted= env->GetMethodID(quizClass, "getTimeAllotted", "()I");
+        jmethodID getNumberOfQuestions = env->GetMethodID(quizClass, "getNumberOfQuestions", "()I");
 
-               jmethodID getDate= env->GetMethodID(quizClass, "getDateOfCreation", "()Ljava/lang/String;");
-               jmethodID getAvgScore = env->GetMethodID(quizClass, "getAvgScore", "()D");
-               jmethodID getAvgTime = env->GetMethodID(quizClass, "getAvgTime", "()D");
-               jmethodID getTimeAllotted= env->GetMethodID(quizClass, "getTimeAllotted", "()I");
-               jmethodID getNumberOfQuestions = env->GetMethodID(quizClass, "getNumberOfQuestions", "()I");
-
-
-        // Ensure the methods exist
-        if (!getID || !getName || !getTopic || !getDate || !getAvgScore || !getAvgTime || !getTimeAllotted || !getNumberOfQuestions)
-        {
+        // Ensure the getter methods exist 
+        if (!getID || !getName || !getTopic || !getDate || !getAvgScore || !getAvgTime || !getTimeAllotted || !getNumberOfQuestions) {
             cerr << "Error: Could not find necessary getter methods for newQuiz" << endl;
             return -1;  // Return error code if any method is missing
         }
@@ -160,8 +143,6 @@ extern "C" {
         jint timeAllotted = env->CallIntMethod(newQuiz, getTimeAllotted);
         jint numberOfQuestions = env->CallIntMethod(newQuiz, getNumberOfQuestions);
 
-
-
         // Convert Java strings to C++ strings
         const char* nameStr = env->GetStringUTFChars(name, 0);
         const char* topicStr = env->GetStringUTFChars(topic, 0);
@@ -171,7 +152,6 @@ extern "C" {
         outfile << id << "," << nameStr << "," << topicStr << "," << dateStr << ","
                 << avgScore << "," << avgTime << "," << timeAllotted << ","
                 << numberOfQuestions << "," << endl;
-
 
         // Release memory for Java strings
         env->ReleaseStringUTFChars(name, nameStr);
@@ -183,11 +163,12 @@ extern "C" {
 
         cout << "Quiz added to previous quizzes file!" << endl;
 
-        return 0;  
+        return 0;  // Successfully added 
     }
 
-    JNIEXPORT jint JNICALL Java_makequiz_ReviewQuestion_WriteToQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename)
-    {
+    // Function to write questions to the made quiz file 
+    JNIEXPORT jint JNICALL Java_makequiz_ReviewQuiz_WriteToQuizFile(JNIEnv *env, jobject obj, jobject newQuiz, jstring filename) {
+        
         // Convert the jstring filename to a C++ string
         const char* filename_cstr = env->GetStringUTFChars(filename, 0);
 
@@ -217,7 +198,7 @@ extern "C" {
         //iterate through the list of questions
         for (int i = 0; i < listSizeInt; ++i)
         {
-            // get question object
+            // Get question object
             jmethodID getMethod = env->GetMethodID(listClass, "get", "(I)Ljava/lang/Object;");
             jobject questionObj = env->CallObjectMethod(questionsList, getMethod, i);
 
@@ -229,10 +210,10 @@ extern "C" {
             // Get the question class
             jclass questionClass = env->GetObjectClass(questionObj);
 
-            // get details of the question object
+            // Get details of the question object
             jmethodID getQuestionText = env->GetMethodID(questionClass, "getText", "()Ljava/lang/String;");
 
-            // call getters for getting jni value
+            // Call getters for getting jni value
             jstring questionText = (jstring)env->CallObjectMethod(questionObj, getQuestionText);
 
             // Convert question text to a C++ string
@@ -242,7 +223,7 @@ extern "C" {
             outfile << questionTextStr <<",";
             env->ReleaseStringUTFChars(questionText, questionTextStr);
 
-
+            // Get the correct option 
             jmethodID getCorrectAnswer = env->GetMethodID(questionClass, "getCorrectOption", "()Ljava/lang/Character;");
             jobject correctAnswerObj = env->CallObjectMethod(questionObj, getCorrectAnswer);
             jchar correctAnswer = env->CallCharMethod(correctAnswerObj, env->GetMethodID(env->GetObjectClass(correctAnswerObj), "charValue", "()C"));
@@ -255,20 +236,19 @@ extern "C" {
             jmethodID sizeMethod = env->GetMethodID(mapClass, "size", "()I");
             jint mapSizeInt = env->CallIntMethod(optionsMap, sizeMethod);
 
-            // And for optionsMap
+            // Chec if there are options in the optionsMap
             if (optionsMap == nullptr) {
-                  std::cerr << "optionsMap is null!" << std::endl;
+                cout << "No options provided" << endl;
             }
 
-            // Get the 'keySet' method and call it to get the Set of keys (oclearption labels)
+            // Get the keySet method and call it to get the Set of keys 
             jmethodID keySetMethod = env->GetMethodID(mapClass, "keySet", "()Ljava/util/Set;");
             jobject keySet = env->CallObjectMethod(optionsMap, keySetMethod);
 
             // Get the Set class and its 'iterator' method
-             jclass setClass = env->GetObjectClass(keySet);
-             jmethodID iteratorMethod = env->GetMethodID(setClass, "iterator", "()Ljava/util/Iterator;");
-             jobject iterator = env->CallObjectMethod(keySet, iteratorMethod);
-
+            jclass setClass = env->GetObjectClass(keySet);
+            jmethodID iteratorMethod = env->GetMethodID(setClass, "iterator", "()Ljava/util/Iterator;");
+            jobject iterator = env->CallObjectMethod(keySet, iteratorMethod);
 
             // Get the Iterator class and its 'hasNext' and 'next' methods
             jclass iteratorClass = env->GetObjectClass(iterator);
@@ -276,37 +256,34 @@ extern "C" {
             jmethodID nextMethod = env->GetMethodID(iteratorClass, "next", "()Ljava/lang/Object;");
 
             //iterate over the keyset using the iterator
-           while (env->CallBooleanMethod(iterator, hasNextMethod))
-           {
-               // Get the next key (which is a Character)
+            while (env->CallBooleanMethod(iterator, hasNextMethod))
+            {
+               // Get the next key 
                jobject keyObj = env->CallObjectMethod(iterator, nextMethod);
 
-               // Convert the key (Character) to jchar
+               // Convert the key - Character to jchar
                jchar keyChar = env->CallCharMethod(keyObj, env->GetMethodID(env->FindClass("java/lang/Character"), "charValue", "()C"));
 
-               // Now get the corresponding value from the map using the 'get' method
+               // Now get the corresponding value from the map using the get method
                jmethodID getMethod = env->GetMethodID(mapClass, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
                jobject mapValue = env->CallObjectMethod(optionsMap, getMethod, keyObj);
 
-               // Convert the map value (String) to a C++ string
+               // Convert the map value String to a C++ string
                const char* optionValueStr = env->GetStringUTFChars((jstring)mapValue, nullptr);
 
-                // Write the option to file (you can format it as needed, such as "A: 'Option Text'")
+                // Write the option to file
                 outfile << (char)keyChar << "," << optionValueStr << ",";
 
-                // cout <<"wrote option"<< endl;
                 // Release resources for the strings
                 env->ReleaseStringUTFChars((jstring)mapValue, optionValueStr);
-
-
            }
+            // End iterating through options
 
-            // end iterating through options
-            // Write correct answer
+            // Write correct answer to file 
             outfile << (char)correctAnswer << ",";
             outfile << endl;
         }
-        // stop iterating thorugh the questions list
+        // Stop iterating thorugh the Questions list
 
         // Close the file
         outfile.close();
@@ -314,10 +291,8 @@ extern "C" {
         // Release resources
         env->ReleaseStringUTFChars(filename, filename_cstr);
         
-        cout << "Quiz Data appended successfully!" << endl;
+        cout << "Quiz Data appended successfully to quiz file!" << endl;
        
-        return 0;  // Success
+        return 0;  // Successfully written questions 
     }
-
 }
-
