@@ -201,7 +201,7 @@ public class AttemptedQuiz extends Quiz {
         }
 
         Question currentQuestion = questions.get(questionIndex);
-        System.out.println("classes.Question " + (questionIndex + 1) + ": " + currentQuestion.getText());
+        System.out.println("Question " + (questionIndex + 1) + ": " + currentQuestion.getText());
         System.out.println("Options:");
 
         for (Map.Entry<Character, String> entry : currentQuestion.getOptions().entrySet()) {
@@ -250,7 +250,7 @@ public class AttemptedQuiz extends Quiz {
                     break;
                 case "s":
                     quizSubmitted = true;
-                    System.out.println("classes.Quiz submitted successfully!");
+                    System.out.println("Quiz submitted successfully!");
                     timer.cancel(); // Cancel the timer manually
                     break;
                 default:
@@ -287,7 +287,7 @@ public class AttemptedQuiz extends Quiz {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
 
             // Write classes.Quiz ID and Attempt Time
-            writer.write("classes.Quiz ID: " + quizID + " | classes.Quiz Attempted: " + new Date() + "\n");
+            writer.write("Quiz ID: " + quizID + " | Quiz Attempted: " + new Date() + "\n");
 
             // Loop through each question and write the result
             for (int i = 0; i < questions.size(); i++) {
@@ -302,7 +302,7 @@ public class AttemptedQuiz extends Quiz {
             // Optionally, write a line to indicate the end of this particular quiz attempt
             writer.write("------------------------------------------------\n\n");
 
-            System.out.println("classes.Quiz results saved successfully.");
+            System.out.println("Quiz results saved successfully.");
 
         } catch (IOException e) {
             System.out.println("Error writing to file: " + e.getMessage());
@@ -326,12 +326,12 @@ public class AttemptedQuiz extends Quiz {
         if (!quizzes.isEmpty()) {
             int count=1;
             for (Quiz quiz : quizzes) {
-                System.out.println("classes.Quiz " + count + ":");
+                System.out.println("Quiz " + count + ":");
                 count++;
                 System.out.println(quiz); // This will call the toString method of classes.Quiz
             }
 
-            System.out.print("Enter a classes.Quiz ID from the list above: ");
+            System.out.print("Enter a Quiz ID from the list above: ");
             String quizID = scanner.nextLine();
             //System.out.println(quizEngine.QuizPlatform.currentUser.getAttempted());
             int alreadyAttempted = 0;
@@ -358,7 +358,7 @@ public class AttemptedQuiz extends Quiz {
             }
 
             else if (quizIDs.contains(quizID)) {
-                System.out.println("You selected classes.Quiz ID: " + quizID);
+                System.out.println("You selected Quiz ID: " + quizID);
                 String filePath = quizID+".csv";  // Path to your CSV file
                 List<String> attributes = getWordsFromFirstLine(filePath);
                 AttemptQuiz attemptQuiz = new AttemptQuiz(quizID, attributes.get(1), attributes.get(2), attributes.get(3), attributes.get(4), Double.parseDouble(attributes.get(5)), Double.parseDouble(attributes.get(6)), Integer.parseInt(attributes.get(7)), Integer.parseInt(attributes.get(8)));
@@ -366,7 +366,7 @@ public class AttemptedQuiz extends Quiz {
                 loadQuestions(quizID+".csv");
                 startQuiz(quizID);
             } else {
-                System.out.println("Invalid classes.Quiz ID entered.");
+                System.out.println("Invalid Quiz ID entered.");
             }
         } else {
             System.out.println("No quizzes found for the selected topic.");

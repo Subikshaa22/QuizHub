@@ -52,14 +52,14 @@ public class EnterQuestion {
         while (true) {
             String text = scanner.nextLine();
             if (text.equalsIgnoreCase("freeze")) {
-                System.out.println("classes.Question has been frozen.");
+                System.out.println("Question has been frozen.");
                 break;
             }
             else {
                 questionText = text;
             }
             System.out.println("To change question text enter question text");
-            System.out.println("Enter freeze to Freeze the classes.Question");
+            System.out.println("Enter freeze to Freeze the Question");
         }
 
         // Loop for entering options

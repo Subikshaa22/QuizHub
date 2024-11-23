@@ -119,7 +119,7 @@ public class QuizPlatform {
         User newUser = new User(username, email, password, quizMgr);
         users.add(newUser);
         saveUsers();
-        System.out.println("classes.User registered successfully! You can now sign in.");
+        System.out.println("User registered successfully! You can now sign in.");
     }
 
     private static void showMainMenu(Scanner scanner) {
