@@ -98,7 +98,7 @@ public class AttemptedQuiz extends Quiz {
                     String quizName = values[1].trim();
                     String quizTopic = values[2].trim();
                     String dateOfCreation = values[3].trim();
-                    int avgScore = Integer.parseInt(values[4].trim()); // Average score
+                    double avgScore = Double.parseDouble(values[4].trim()); // Average score
                     int avgTimeTaken = Integer.parseInt(values[5].trim()); // Average time taken
                     int timeDuration = Integer.parseInt(values[6].trim()); // Time duration of quiz
                     int numQuestions = Integer.parseInt(values[7].trim()); // Number of questions
@@ -213,7 +213,7 @@ public class AttemptedQuiz extends Quiz {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
-        System.out.println("Choose an option (A,B,C,D, ...), 'clear' to clear, 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
+        System.out.println("Choose an option (A,B,C,D, ...), 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
     }
     // Start the quiz
     public void startQuiz(String quizID, int duration) {
@@ -261,13 +261,7 @@ public class AttemptedQuiz extends Quiz {
                 default:
                     if (input.matches("[A-Za-z]")) {
                         chosenOptions.set(currentQuestionIndex, input);
-                    } 
-                    
-                    else if (input.equals("clear"))
-                    {
-                        chosenOptions.set(currentQuestionIndex, "-1");
-                    }
-                    else {
+                    } else {
                         try {
                             int questionNumber = Integer.parseInt(input);
                             if (questionNumber > 0 && questionNumber <= questions.size()) {
@@ -289,7 +283,94 @@ public class AttemptedQuiz extends Quiz {
         saveQuizResults(email, quizID);
     }
 
-    public static void generateBarChartFromLastLine(String fileName) {
+    static double quiz_avg = 0;
+
+    public static void modifyAvgInPreviousQuizzez(String quizID, double quiz_avg) {
+        String fileName = "PreviousQuizzez.csv";
+        List<String> lines = new ArrayList<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            // Read the first line
+            if ((line = reader.readLine()) != null) {
+                // Split the first line by commas
+                String[] parts = line.split(",");
+
+                if (parts[0].equals(quizID))
+                {
+                    // Modify one of the terms (for example, changing the second term)
+                    parts[5] = Double.toString(quiz_avg);  // Modify the second term as an exampl
+
+                }
+                // Rebuild the modified line by joining the parts back with commas
+                String modifiedLine = String.join(",", parts);
+                lines.add(modifiedLine);  // Add the modified first line to the list
+            }
+
+            // Read the rest of the lines
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);  // Add remaining lines without changes
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        }
+
+        // Rewrite the file with modified content
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();  // Add a newline after each line
+            }
+            System.out.println("File has been updated.");
+        } catch (IOException e) {
+            System.out.println("Error writing to the file: " + e.getMessage());
+        }
+    }
+
+    
+    public static void modifyAvgInQuizFile(String fileName, double quiz_avg) {
+        List<String> lines = new ArrayList<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            // Read the first line
+            if ((line = reader.readLine()) != null) {
+                // Split the first line by commas
+                String[] parts = line.split(",");
+
+                // Modify one of the terms (for example, changing the second term)
+                parts[5] = Double.toString(quiz_avg);  // Modify the second term as an exampl
+
+                // Rebuild the modified line by joining the parts back with commas
+                String modifiedLine = String.join(",", parts);
+                lines.add(modifiedLine);  // Add the modified first line to the list
+            }
+
+            // Read the rest of the lines
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);  // Add remaining lines without changes
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        }
+
+        // Rewrite the file with modified content
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();  // Add a newline after each line
+            }
+            System.out.println("File has been updated.");
+        } catch (IOException e) {
+            System.out.println("Error writing to the file: " + e.getMessage());
+        }
+    }
+
+    public static void generateBarChartFromLastLine(String fileName, String quizID) {
         BufferedReader reader = null;
         String lastLine = null;
     
@@ -315,7 +396,7 @@ public class AttemptedQuiz extends Quiz {
             for (int i = 0; i < parts.length; i++) {
                 numbers[i] = Integer.parseInt(parts[i].trim());
             }
-    
+
             // Find the minimum and maximum values in the numbers
             int min = numbers[0];
             int max = numbers[0];
@@ -323,6 +404,16 @@ public class AttemptedQuiz extends Quiz {
                 if (num < min) min = num;
                 if (num > max) max = num;
             }
+
+            int score_sum=0;
+
+            for (int num : numbers) {
+                score_sum = score_sum + num;
+            }
+
+            quiz_avg = score_sum/(numbers.length);
+            modifyAvgInQuizFile(fileName,quiz_avg);
+            modifyAvgInPreviousQuizzez(quizID, score_sum);
     
             // Count occurrences of each number
             int[] frequency = new int[max - min + 1];
@@ -331,7 +422,7 @@ public class AttemptedQuiz extends Quiz {
             }
     
             // Print the bar chart
-            System.out.println("\nBar Chart:");
+            System.out.println("\nQuiz Statistics:");
             for (int i = 0; i < frequency.length; i++) {
                 System.out.printf("%2d | ", i + min);
                 for (int j = 0; j < frequency[i]; j++) {
@@ -402,31 +493,21 @@ public class AttemptedQuiz extends Quiz {
         // Open the file in append mode
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
     
-            // Write classes.Quiz ID and Attempt Time
-
-            writer.write("classes.Quiz ID: " + quizID + "\n" + "classes.Quiz Attempted: " + new Date() + "\n");
+            // Write Quiz ID and Attempt Time
+            writer.write("Quiz ID: " + quizID + " | Quiz Attempted: " + new Date() + "\n");
     
-
             // Loop through each question and write the result
             for (int i = 0; i < questions.size(); i++) {
                 Question question = questions.get(i);
                 String chosenOption = chosenOptions.get(i);
-                int score;
-                if (chosenOption.equals("-1"))
-                {
-                    score = 0;
-                }
-
-                else{
                 boolean isCorrect = question.getCorrectOption().toString().equals(chosenOption);
-                score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
-                }
+                int score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
     
                 // Get the options and format them without curly braces
                 Map<Character, String> options = question.getOptions();
                 String formattedOptions = formatOptions(options);
     
-                writer.write(question.getText() + "," + formattedOptions + "\n" + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
+                writer.write(question.getText() + "," + formattedOptions + "," + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
                 total_score+=score;
             }
 
@@ -443,9 +524,9 @@ public class AttemptedQuiz extends Quiz {
 
         String quizFile = quizID+".csv";
         modifySpecificLine(quizFile,questions.size()+2,total_score);
-        generateBarChartFromLastLine(quizFile);
+        generateBarChartFromLastLine(quizFile, quizID);
     }
-
+    
     // Helper method to format the HashMap without curly braces
     private String formatOptions(Map<Character, String> options) {
         StringBuilder formattedOptions = new StringBuilder();
