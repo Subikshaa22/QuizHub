@@ -31,17 +31,8 @@ extern "C" JNIEXPORT jstring JNICALL Java_makequiz_MakeQuiz_getCurrentDate(JNIEn
     // Return the formatted date as jstring
     return result;
 }
-#include <iostream>
-#include <jni.h>
-#include <ctime>
-#include <iomanip>
-#include <sstream>
 
-// Forward declaration of the JNI function
-extern "C" {
-    JNIEXPORT jstring JNICALL Java_makequiz_MakeQuiz_getCurrentDate(JNIEnv *env, jobject obj);
-}
-
+/*
 int main() {
     try {
         // Simulate creating a JNI environment and calling the getCurrentDate function
@@ -64,3 +55,4 @@ int main() {
 
     return 0;
 }
+*/
