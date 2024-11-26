@@ -28,9 +28,11 @@ public class EnterQuestion {
             // Add a new question 
             EnterNewQuestion();
             System.out.println("If you are done entering questions Enter Yes, else enter No");
-            String stop = scanner.nextLine();
+            String stop = scanner.nextLine().trim();
             if(stop.equals("Yes")){
                 stopNow = true;
+            } else if (!stop.equalsIgnoreCase("No")) {
+                System.out.println("Invalid input. Please enter 'Yes' or 'No'.");
             }
         }
     }
@@ -50,14 +52,21 @@ public class EnterQuestion {
  
         // Loop for entering/editing the question text
         while (true) {
-            String text = scanner.nextLine();
+            String text = scanner.nextLine().trim();
+            if (text.isEmpty()) {
+                System.out.println("Question text cannot be empty. Please enter valid text.");
+                continue;
+            }
             if (text.equalsIgnoreCase("freeze")) {
+                if (questionText.isEmpty()) {
+                    System.out.println("You cannot freeze without entering question text. Please add the text first.");
+                    continue;
+                }
                 System.out.println("Question has been frozen.");
                 break;
             }
-            else {
-                questionText = text;
-            }
+            
+            questionText = text;
             System.out.println("To change question text enter question text");
             System.out.println("Enter freeze to Freeze the Question");
         }
@@ -66,15 +75,22 @@ public class EnterQuestion {
         String optionInput;
         System.out.println("Enter Option label followed by the option text (Eg. A text):");
         while (true) {
-            optionInput = scanner.nextLine();
+            optionInput = scanner.nextLine().trim();
 
             // Check if the user wants to freeze the options
             if (optionInput.equalsIgnoreCase("freeze")) {
+                
+                // Check if the options are empty 
+                if (options.isEmpty()) {
+                    System.out.println("You cannot freeze without adding any options. Please add at least one.");
+                    continue;
+                }
                 System.out.println("Options have been frozen.");
                 break;
             }
 
             String[] parts = optionInput.split(" ", 2);
+
             if (parts.length == 2) {
                 char Option_Label = parts[0].toUpperCase().charAt(0); // Normalize to Uppercase
                 String Option_Text = parts[1];
@@ -133,7 +149,7 @@ public class EnterQuestion {
         int marksForCorrect = 1;
         System.out.println("Enter marks for the correct answer (default is 1)\nEnter freeze to keep the default value:");
         while (true) {
-            String marksGiven = scanner.nextLine();
+            String marksGiven = scanner.nextLine().trim();
             // Check if the user wants to freeze the correct answer
             if (marksGiven.equalsIgnoreCase("freeze")) {
                 System.out.println("Marks for correct answer has been frozen.");
@@ -189,3 +205,4 @@ public class EnterQuestion {
     }
 
 }
+
