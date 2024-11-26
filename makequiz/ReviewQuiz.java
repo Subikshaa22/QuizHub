@@ -8,13 +8,8 @@ public class ReviewQuiz {
     public native int AddToPrevQuizFile(ExistingQuizzes refQuiz);
 
     // Load the native library to access the C++ functions 
-    static { 
-        try {
-            System.loadLibrary("mylib");
-        } catch (UnsatisfiedLinkError e) {
-            System.out.println("Error loading native library: " + e.getMessage());
-            System.exit(1);
-        }
+    static {
+        System.loadLibrary("mylib");
     }
 
     // Default constructor 
@@ -50,21 +45,9 @@ public class ReviewQuiz {
             System.out.println("1. Edit Questions ");
             System.out.println("2. Save Quiz ");
             System.out.println("3. Discard Quiz ");
-            System.out.println("Enter 1/2/3:");
-
-            // Check if an integer is input 
-            boolean validInput = false;
-            while (!validInput) {
-                try {
-                    System.out.print("Enter a number: ");
-                    choice = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline character 
-                    validInput = true; // If no exception, input is valid
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a number.");
-                    scanner.nextLine(); // Clear the invalid input
-                }
-            }
+            System.out.print("Enter a number: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline char
 
             switch (choice) {
                 case 1: {

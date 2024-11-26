@@ -19,11 +19,16 @@ extern "C" {
         // Convert jstring filename to C++ string --correct
         const char *filenameChars = env->GetStringUTFChars(filename, NULL);
         string cppFilename(filenameChars);
-         env->ReleaseStringUTFChars(filename, filenameChars);
+        env->ReleaseStringUTFChars(filename, filenameChars);
+
+        // Convert the int 'id' to a string
+        string idString = to_string(id);
+        // Convert the C++ string to a jstring
+        jstring idJString = env->NewStringUTF(idString.c_str());
 
         // Get method IDs for setters in the Java class
         jclass quizClass = env->GetObjectClass(newQuiz);
-        jmethodID setIDMethod = env->GetMethodID(quizClass, "setID", "(I)V");
+        jmethodID setIDMethod = env->GetMethodID(quizClass, "setID", "(Ljava/lang/String;)V");
         jmethodID setNameMethod = env->GetMethodID(quizClass, "setName", "(Ljava/lang/String;)V");
         jmethodID setTopicMethod = env->GetMethodID(quizClass, "setTopic", "(Ljava/lang/String;)V");
         jmethodID setUsernameMethod = env->GetMethodID(quizClass, "setUsername", "(Ljava/lang/String;)V");
@@ -32,7 +37,7 @@ extern "C" {
         jmethodID setNumberOfQuestionsMethod = env->GetMethodID(quizClass, "setNumberOfQuestions", "(I)V");
 
         // Call setter methods on the Java object
-        env->CallVoidMethod(newQuiz, setIDMethod, id);
+        env->CallVoidMethod(newQuiz, setIDMethod, idJString);
         env->CallVoidMethod(newQuiz, setDateMethod, date);
         env->CallVoidMethod(newQuiz, setNameMethod, name);
         env->CallVoidMethod(newQuiz, setTopicMethod, topic);
@@ -56,7 +61,7 @@ extern "C" {
         }
 
         // Get getters from the Java object
-        jmethodID getIDMethod = env->GetMethodID(quizClass, "getID", "()I");
+        jmethodID getIDMethod = env->GetMethodID(quizClass, "getID", "()Ljava/lang/String;");
         jmethodID getNameMethod = env->GetMethodID(quizClass, "getName", "()Ljava/lang/String;");
         jmethodID getTopicMethod = env->GetMethodID(quizClass, "getTopic", "()Ljava/lang/String;");
         jmethodID getUsernameMethod = env->GetMethodID(quizClass, "getUsername", "()Ljava/lang/String;");
@@ -67,7 +72,6 @@ extern "C" {
         jmethodID getNumberOfQuestionsMethod = env->GetMethodID(quizClass, "getNumberOfQuestions", "()I");
 
         // Call getter methods to retrieve values
-        jint idVal = env->CallIntMethod(newQuiz, getIDMethod);
         jstring nameVal = (jstring) env->CallObjectMethod(newQuiz, getNameMethod);
         jstring topicVal = (jstring) env->CallObjectMethod(newQuiz, getTopicMethod);
         jstring usernameVal = (jstring) env->CallObjectMethod(newQuiz, getUsernameMethod);
@@ -76,6 +80,15 @@ extern "C" {
         jdouble avgTimeVal = env->CallDoubleMethod(newQuiz, getAvgTimeMethod);
         jint timeAllottedVal = env->CallIntMethod(newQuiz, getTimeAllottedMethod);
         jint numOfQuestionsVal = env->CallIntMethod(newQuiz, getNumberOfQuestionsMethod);
+
+        // Convert the jstring to a C++ string
+        const char *idCString = env->GetStringUTFChars(idJString, NULL);
+        std::string idCppString(idCString);
+        env->ReleaseStringUTFChars(idJString, idCString);
+        // Convert the C++ string to an int
+        int idVal = std::stoi(idCppString); // Safe since we validated it
+
+
 
         // Convert Java strings to C++ strings
         const char *nameStr = env->GetStringUTFChars(nameVal, NULL);
@@ -118,7 +131,7 @@ extern "C" {
         jclass quizClass = env->GetObjectClass(newQuiz);
 
         // Get getters from the Java object
-        jmethodID getID = env->GetMethodID(quizClass, "getID", "()I");
+        jmethodID getID = env->GetMethodID(quizClass, "getID", "()Ljava/lang/String;");
         jmethodID getName= env->GetMethodID(quizClass, "getName", "()Ljava/lang/String;");
         jmethodID getTopic = env->GetMethodID(quizClass, "getTopic", "()Ljava/lang/String;");
         jmethodID getDate= env->GetMethodID(quizClass, "getDateOfCreation", "()Ljava/lang/String;");
@@ -133,8 +146,17 @@ extern "C" {
             return -1;  // Return error code if any method is missing
         }
 
-        // Call getters for jni values
-        jint id = env->CallIntMethod(newQuiz, getID);
+
+        // for id we need conversion also
+        jstring idInJString = (jstring) env->CallObjectMethod(newQuiz, getID);
+        // Convert the jstring to a C++ string
+        const char *idString = env->GetStringUTFChars(idInJString, NULL);
+        string idCppString(idString);
+        env->ReleaseStringUTFChars(idInJString, idString);
+        // Convert the C++ string to an int
+        int id = stoi(idCppString); // Safe since we validated it
+
+
         jstring name = (jstring)env->CallObjectMethod(newQuiz, getName);
         jstring topic = (jstring)env->CallObjectMethod(newQuiz, getTopic);
         jstring dateOfCreation = (jstring)env->CallObjectMethod(newQuiz, getDate);
