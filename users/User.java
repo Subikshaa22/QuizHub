@@ -3,6 +3,7 @@ import attemptedquiz.AttemptQuiz;
 import quizEngine.quizManager;
 
 import java.util.*;
+import java.util.regex.*;
 
 public class User {
     private String username;
@@ -15,7 +16,7 @@ public class User {
     // Constructor
     public User(String username, String email, String password, quizManager quizMgr) {
         this.username = username;
-        this.email = email; 
+        this.email = email;
         this.password = password;
         this.attempted = new ArrayList<>();
         this.made = new ArrayList<>();
@@ -36,11 +37,11 @@ public class User {
         this.username = username;
     }
 
-    public String getEmail() {      
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) { 
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -79,4 +80,20 @@ public class User {
                 '}';
     }
 
+
+    public static boolean validateEmail(String email) {
+        String emailRegex = "^[\\w.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!Pattern.matches(emailRegex, email)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validatePassword(String password) {
+        String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$";
+        if (!Pattern.matches(passwordRegex, password)) {
+            return false;
+        }
+        return true;
+    }
 }
