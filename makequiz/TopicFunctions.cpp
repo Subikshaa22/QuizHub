@@ -138,7 +138,7 @@ extern "C" {
         return 1; // Successfully written the topic to the file 
     }
 }
-
+/*
 int main() {
     try {
         // Simulate calling Java_makequiz_MakeQuiz_displayTopics
@@ -171,3 +171,4 @@ int main() {
 
     return 0;
 }
+*/
