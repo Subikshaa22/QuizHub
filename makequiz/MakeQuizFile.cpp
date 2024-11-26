@@ -318,3 +318,58 @@ extern "C" {
         return 0;  // Successfully written questions 
     }
 }
+int main() {
+       try {
+        // Example file name and quiz data
+        jstring filename = env->NewStringUTF("quiz123.csv");
+        jint quizID = 123;
+        jstring name = env->NewStringUTF("Sample Quiz");
+        jstring topic = env->NewStringUTF("General Knowledge");
+        jstring username = env->NewStringUTF("user123");
+        jint timeAllo = 30;  // Time allowed for the quiz in minutes
+        jint nq = 10;  // Number of questions in the quiz
+        jstring date = env->NewStringUTF("2024-11-27");
+
+        // Create an object of the ReviewQuiz class
+        jclass quizClass = env->FindClass("makequiz/ReviewQuiz");
+        if (quizClass == nullptr) {
+            cerr << "Error: Class not found!" << endl;
+            return -1;
+        }
+
+        jobject newQuiz = env->NewObject(quizClass, env->GetMethodID(quizClass, "<init>", "()V"));
+        if (newQuiz == nullptr) {
+            cerr << "Error: Unable to create object!" << endl;
+            return -1;
+        }
+
+        // Call MakeIQuizFile function to create the quiz file
+        jint result = Java_makequiz_ReviewQuiz_MakeIQuizFile(env, nullptr, newQuiz, filename, quizID, name, topic, username, timeAllo, nq, date);
+        if (result != 0) {
+            cerr << "Error: Failed to create quiz file!" << endl;
+            return -1;
+        }
+
+        // Add the quiz to the previous quiz file
+        result = Java_makequiz_ReviewQuiz_AddToPrevQuizFile(env, nullptr, newQuiz);
+        if (result != 0) {
+            cerr << "Error: Failed to add quiz to previous quizzes!" << endl;
+            return -1;
+        }
+
+        // Write questions to the quiz file
+        result = Java_makequiz_ReviewQuiz_WriteToQuizFile(env, nullptr, newQuiz, filename);
+        if (result != 0) {
+            cerr << "Error: Failed to write quiz questions!" << endl;
+            return -1;
+        }
+
+        cout << "Quiz data processed successfully!" << endl;
+
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+        return -1;
+    }
+
+    return 0;  // Success
+}
