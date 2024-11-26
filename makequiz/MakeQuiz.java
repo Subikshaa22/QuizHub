@@ -1,4 +1,5 @@
 package makequiz;
+
 import java.util.*;
 
 public class MakeQuiz {
@@ -7,24 +8,27 @@ public class MakeQuiz {
     static Scanner scanner = new Scanner(System.in);
 
     // Create a Quiz Object representing the new Quiz being created
-    // Each MakeQuiz instance will have its own newQuiz instance 
+    // Each MakeQuiz instance will have its own newQuiz instance
     ExistingQuizzes newQuiz = new ExistingQuizzes();
 
-    // Declare the native functions  to interact with C++ library
+    // Declare the native functions to interact with C++ library
     public native boolean checkIfTopicExists(String topic);
+
     public native int saveTopic(String topic);
+
     public native int displayTopics();
+
     public native String getCurrentDate();
 
-    // Load the native library to access the C++ functions 
+    // Load the native library to access the C++ functions
     static {
         System.loadLibrary("mylib");
     }
 
-
     // Method to add questions to the quiz.
     public static void callEnterQuestion(MakeQuiz makeQuizInstance) {
-        // Access newQuiz through makeQuizInstance instance and the functions from enterQuestion class
+        // Access newQuiz through makeQuizInstance instance and the functions from
+        // enterQuestion class
         EnterQuestion callEnterQuestion = new EnterQuestion();
         callEnterQuestion.setQobject(makeQuizInstance.newQuiz);
         callEnterQuestion.EnterQuestions();
@@ -32,15 +36,17 @@ public class MakeQuiz {
 
     // Method to edit existing questions in the quiz.
     public static void callEditQuestion(MakeQuiz makeQuizInstance) {
-        // Access newQuiz through makeQuizInstance instance and the functions from editQuestion class
+        // Access newQuiz through makeQuizInstance instance and the functions from
+        // editQuestion class
         EditQuestion callEditQuestion = new EditQuestion();
         callEditQuestion.setQobject(makeQuizInstance.newQuiz);
         callEditQuestion.editQuestion();
     }
 
     // Method to review the quiz before finalizing it.
-    public static void callReview(MakeQuiz makeQuizInstance, String quizID,String name,String topic, String date) {
-        // Access newQuiz through makeQuizInstance instance and the functions from reviewQuiz class
+    public static void callReview(MakeQuiz makeQuizInstance, String quizID, String name, String topic, String date) {
+        // Access newQuiz through makeQuizInstance instance and the functions from
+        // reviewQuiz class
         ReviewQuiz callReview = new ReviewQuiz();
         callReview.setQobject(makeQuizInstance.newQuiz);
         // Convert the id to a integer and send it to function
@@ -55,7 +61,8 @@ public class MakeQuiz {
         OUTER: for (int i = 0; i < 5; i++) {
             System.out.println("The following topics are available:");
 
-            // Create a new instance of MakeQuiz to access cpp function to read and display the available topics
+            // Create a new instance of MakeQuiz to access cpp function to read and display
+            // the available topics
             MakeQuiz quizInstance = new MakeQuiz();
             quizInstance.displayTopics();
 
@@ -63,35 +70,38 @@ public class MakeQuiz {
             System.out.println("1. Select a topic ");
             System.out.println("2. Create a new topic ");
 
-            // Check if an integer is input
             int choice = -1;
-            boolean validInput = false;
-            while (!validInput) {
-                try {
-                    System.out.print("Enter a number: ");
-                    choice = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline character
-                    validInput = true; // If no exception, input is valid
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a number.");
-                    scanner.nextLine(); // Clear the invalid input
+            System.out.print("Enter a number: ");
+            if (scanner.hasNextInt()) { // Check if input is an integer
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+                if (choice < 1 || choice > 2) { // Check if the choice is within the valid range
+                    System.out.println("Invalid choice, please select 1 or 2.");
+                    continue OUTER; // Re-prompt the user
                 }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
+                continue OUTER; // Re-prompt the user
             }
-
 
             // Make decisions based on users choice
             switch (choice) {
-                case 1: {  // Select a topic already in database
+                case 1: { // Select a topic already in database
                     System.out.println("Enter topic selected: ");
                     topic = scanner.nextLine();
 
+                    if (topic.trim().isEmpty()) { // Check for empty input or only spaces
+                        System.out.println("Topic cannot be empty. Please enter a valid topic.");
+                        continue OUTER;
+                    }
+                    
                     // Check if the topic exists using native method
                     boolean exists = true;
                     exists = quizInstance.checkIfTopicExists(topic);
                     if (exists == true) {
                         break OUTER; // If topic exists, exit the loop
-                    }
-                    else {
+                    } else {
                         System.out.println("Invalid Topic");
                         continue OUTER; // Continue to next iteration if topic doesn't exist
                     }
@@ -99,6 +109,11 @@ public class MakeQuiz {
                 case 2: { // Create a new topic and add it to database
                     System.out.println("Enter new topic: ");
                     topic = scanner.nextLine();
+
+                    if (topic.trim().isEmpty()) { // Check for empty input
+                        System.out.println("Topic name cannot be empty. Please enter a valid topic.");
+                        continue OUTER;
+                    }
 
                     // Save the new topic using native method
                     quizInstance.saveTopic(topic);
@@ -137,23 +152,36 @@ public class MakeQuiz {
             System.out.println("1. Enter new Question");
             System.out.println("2. Edit Existing Question");
             System.out.println("3. Finish Questions");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
+            System.out.print("Enter a number: ");
+            int choice = -1;
+            if (scanner.hasNextInt()) { // Check if input is an integer
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+
+                if (choice < 1 || choice > 3) { // Validate menu options
+                    System.out.println("Invalid choice, please select 1, 2, or 3.");
+                    continue COUTER;
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
+                continue COUTER;
+            }
 
             switch (choice) {
                 case 1: {
                     // Add a new Question
-                    callEnterQuestion(makeQuizInstance );
+                    callEnterQuestion(makeQuizInstance);
                     break;
                 }
                 case 2: {
-                    // Edit a existing question 
+                    // Edit a existing question
                     callEditQuestion(makeQuizInstance);
                     break;
                 }
                 case 3: {
-                    // Review the quiz and save/discard it 
-                    callReview(makeQuizInstance, quizID, name,topic, dateCreated);
+                    // Review the quiz and save/discard it
+                    callReview(makeQuizInstance, quizID, name, topic, dateCreated);
                     break COUTER;
                 }
                 default:
@@ -162,3 +190,4 @@ public class MakeQuiz {
         } // End of COUTER
     } // End of main
 } // End of class
+
