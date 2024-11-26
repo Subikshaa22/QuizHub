@@ -27,16 +27,22 @@ public class EditQuestion {
             System.out.println("\nEnter the question number to edit (1 to " + quiz.getQuestions().size() + "):");
             System.out.println("Enter 0 to exit.");
 
-            int questionNo = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            if (questionNo == 0) {
-                break; // Exit the loop
-            }
-
-            // Check if input in within range
-            if (questionNo < 1 || questionNo > quiz.getQuestions().size()) {
-                System.out.println("Invalid question number, please try again!");
+            int questionNo =-1;
+            if (scanner.hasNextInt()) { // Check if input is a valid integer
+                questionNo = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+            
+                if (questionNo == 0) {
+                    break; // Exit the loop
+                }
+            
+                if (questionNo < 1 || questionNo > quiz.getQuestions().size()) {
+                    System.out.println("Invalid question number, please try again!");
+                    continue;
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
                 continue;
             }
 
@@ -54,10 +60,22 @@ public class EditQuestion {
             System.out.println("2. Edit question options");
             System.out.println("3. Freeze question, no changes needed");
 
-            // Handle user choice
-            int userChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            int userChoice =-1;
+            if (scanner.hasNextInt()) { // Check if input is a valid integer
+                userChoice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+            
+                if (userChoice < 1 || userChoice > 3) { // Validate range
+                    System.out.println("Invalid choice, please try again!");
+                    continue;
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
 
+            // Go through the choices
             if (userChoice == 1) {
                 // Edit the question text
                 System.out.println("Enter the new question text:");
