@@ -285,13 +285,8 @@ public class AttemptedQuiz extends Quiz {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
     
             // Write classes.Quiz ID and Attempt Time
-<<<<<<< Updated upstream
-            writer.write("Quiz ID: " + quizID + " | Quiz Attempted: " + new Date() + "\n");
-
-=======
             writer.write("classes.Quiz ID: " + quizID + " | classes.Quiz Attempted: " + new Date() + "\n");
     
->>>>>>> Stashed changes
             // Loop through each question and write the result
             for (int i = 0; i < questions.size(); i++) {
                 Question question = questions.get(i);
@@ -308,15 +303,9 @@ public class AttemptedQuiz extends Quiz {
     
             // Optionally, write a line to indicate the end of this particular quiz attempt
             writer.write("------------------------------------------------\n\n");
-<<<<<<< Updated upstream
-
-            System.out.println("Quiz results saved successfully.");
-
-=======
     
             System.out.println("classes.Quiz results saved successfully.");
     
->>>>>>> Stashed changes
         } catch (IOException e) {
             System.out.println("Error writing to file: " + e.getMessage());
         }
