@@ -233,10 +233,20 @@ extern "C" {
             jclass questionClass = env->GetObjectClass(questionObj);
 
             // Get details of the question object
-            jmethodID getQuestionText = env->GetMethodID(questionClass, "getText", "()Ljava/lang/String;");
+            jmethodID getText = env->GetMethodID(questionClass, "getText", "()Ljava/lang/String;");
+            jmethodID getMarksForCorrect = env->GetMethodID(questionClass, "getMarksForCorrect", "()I");
+            jmethodID getMarksForWrong = env->GetMethodID(questionClass, "getMarksForWrong", "()I");
+           
 
-            // Call getters for getting jni value
-            jstring questionText = (jstring)env->CallObjectMethod(questionObj, getQuestionText);
+            if (!getText || !getMarksForCorrect || !getMarksForWrong) {
+                cerr << "Error: Method not found!" << endl;
+                return -1;
+            }
+
+            // Get all the details 
+            jint marksForCorrect = env->CallIntMethod(questionObj, getMarksForCorrect);
+            jint marksForWrong = env->CallIntMethod(questionObj, getMarksForWrong);
+            jstring questionText = (jstring)env->CallObjectMethod(questionObj, getText);
 
             // Convert question text to a C++ string
             const char* questionTextStr = env->GetStringUTFChars(questionText, 0);
@@ -257,6 +267,10 @@ extern "C" {
             jclass mapClass = env->GetObjectClass(optionsMap);
             jmethodID sizeMethod = env->GetMethodID(mapClass, "size", "()I");
             jint mapSizeInt = env->CallIntMethod(optionsMap, sizeMethod);
+            jint numberOfOptions = env->CallIntMethod(optionsMap, sizeMethod);
+
+            // write the number of options 
+             outfile << numberOfOptions <<",";
 
             // Chec if there are options in the optionsMap
             if (optionsMap == nullptr) {
@@ -303,6 +317,10 @@ extern "C" {
 
             // Write correct answer to file 
             outfile << (char)correctAnswer << ",";
+
+            // write marks for wrogn n right 
+            outfile << marksForCorrect << "," << marksForWrong;
+
             outfile << endl;
         }
         // Stop iterating thorugh the Questions list
@@ -318,6 +336,9 @@ extern "C" {
         return 0;  // Successfully written questions 
     }
 }
+
+
+/*
 int main() {
        try {
         // Example file name and quiz data
@@ -373,3 +394,4 @@ int main() {
 
     return 0;  // Success
 }
+*/
