@@ -186,6 +186,7 @@ public class QuizPlatform {
         System.out.println("Accessing Continue Learning...");
         System.out.println("1. Make A Quiz");
         System.out.println("2. Attempt Quiz");
+        System.out.println("3. Go Back to Main Menu");
         System.out.print("Choice: ");
         // Here you can integrate the `quizEngine.quizManager` or any other class functionality for quiz learning
 
@@ -200,7 +201,8 @@ public class QuizPlatform {
                      break;
             case 2 : attemptQuiz.main();
                      break;
-            // case 3 -> GenerateQuiz();
+            case 3 : showMainMenu(scanner);
+                     break;
             default :
                 System.out.println("Invalid choice. Please try again.");
         }
