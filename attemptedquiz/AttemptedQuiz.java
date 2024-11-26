@@ -147,10 +147,14 @@ public class AttemptedQuiz extends Quiz {
     public void loadQuestions(String filePath) {
         questions.clear(); // Clear existing questions before loading new ones
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine(); // Skip the header line
             String line;
+            line = br.readLine();
+            String[] header_line= line.split(",");
+            int noOfQuestions = Integer.parseInt(header_line[8]);
+            int j=0;
 
-            while ((line = br.readLine()) != null) {
+            while (j<noOfQuestions) {
+                line = br.readLine();
                 String[] values = line.split(",");
                 if (values.length < 3) {
                     System.out.println("Skipping malformed line: " + line);
@@ -182,6 +186,7 @@ public class AttemptedQuiz extends Quiz {
                 }
 
                 questions.add(new Question(text, options, correctOption, marksForCorrect, marksForWrong));
+                j++;
             }
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
@@ -278,14 +283,121 @@ public class AttemptedQuiz extends Quiz {
         saveQuizResults(email, quizID);
     }
 
+    public static void generateBarChartFromLastLine(String fileName) {
+        BufferedReader reader = null;
+        String lastLine = null;
+    
+        try {
+            // Open the file for reading
+            reader = new BufferedReader(new FileReader(fileName));
+            String currentLine;
+            
+            // Read the file and keep updating lastLine to the latest line
+            while ((currentLine = reader.readLine()) != null) {
+                lastLine = currentLine;
+            }
+            
+            // If the last line is null or empty, print a message and return
+            if (lastLine == null || lastLine.trim().isEmpty()) {
+                System.out.println("The file is empty or does not contain any valid lines.");
+                return;
+            }
+    
+            // Split the last line into numbers and parse them
+            String[] parts = lastLine.split(",");
+            int[] numbers = new int[parts.length];
+            for (int i = 0; i < parts.length; i++) {
+                numbers[i] = Integer.parseInt(parts[i].trim());
+            }
+    
+            // Find the minimum and maximum values in the numbers
+            int min = numbers[0];
+            int max = numbers[0];
+            for (int num : numbers) {
+                if (num < min) min = num;
+                if (num > max) max = num;
+            }
+    
+            // Count occurrences of each number
+            int[] frequency = new int[max - min + 1];
+            for (int num : numbers) {
+                frequency[num - min]++;
+            }
+    
+            // Print the bar chart
+            System.out.println("\nBar Chart:");
+            for (int i = 0; i < frequency.length; i++) {
+                System.out.printf("%2d | ", i + min);
+                for (int j = 0; j < frequency[i]; j++) {
+                    System.out.print("*");
+                }
+                System.out.println();
+            }
+    
+        } catch (IOException e) {
+            System.out.println("Error reading the file: " + e.getMessage());
+        } finally {
+            // Close the file reader
+            try {
+                if (reader != null) reader.close();
+            } catch (IOException e) {
+                System.out.println("Error closing the file reader: " + e.getMessage());
+            }
+        }
+    }
+
+    public static void appendIntegerToFile(String fileName, int value) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            // Add a new line and write the integer
+            writer.newLine();
+            writer.write(String.valueOf(value));
+    
+            System.out.println("Integer added to a new line successfully.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    
+    public void modifySpecificLine(String quizFile, int lineNumber, int totalScore) {
+        try {
+            // Read all lines from the file
+            List<String> lines = Files.readAllLines(Paths.get(quizFile));
+
+            // Check if the specified line number is within bounds
+            if (lineNumber > 0 && lineNumber <= lines.size()) {
+                // Modify the specified line by appending the score
+                String targetLine = lines.get(lineNumber-1); // lineNumber is 1-based, so subtract 1
+                targetLine += "," + totalScore; // Append the score
+                lines.set(lineNumber - 1, targetLine); // Update the specific line
+            } else {
+                if(lineNumber==lines.size()+1)
+                {
+                    appendIntegerToFile(quizFile, totalScore);
+                    return;
+                }
+                System.out.println("Line number out of range.");
+                return;
+            }
+    
+            // Write the modified lines back to the file
+            Files.write(Paths.get(quizFile), lines, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+    
+            System.out.println("Score appended to line " + lineNumber + " successfully.");
+        } catch (IOException e) {
+            System.out.println("Error accessing file: " + e.getMessage());
+        }
+    }
+    
     public void saveQuizResults(String userEmail, String quizID) {
         String userFile = userEmail + "_quiz_results.txt";
+        int total_score=0;
     
         // Open the file in append mode
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
     
-            // Write classes.Quiz ID and Attempt Time
-            writer.write("classes.Quiz ID: " + quizID + " | classes.Quiz Attempted: " + new Date() + "\n");
+            // Write Quiz ID and Attempt Time
+            writer.write("Quiz ID: " + quizID + " | Quiz Attempted: " + new Date() + "\n");
     
             // Loop through each question and write the result
             for (int i = 0; i < questions.size(); i++) {
@@ -299,16 +411,23 @@ public class AttemptedQuiz extends Quiz {
                 String formattedOptions = formatOptions(options);
     
                 writer.write(question.getText() + "," + formattedOptions + "," + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
+                total_score+=score;
             }
+
+            writer.write("Total Score : " + total_score + "\n");
     
             // Optionally, write a line to indicate the end of this particular quiz attempt
-            writer.write("------------------------------------------------\n\n");
+            writer.write("------------------------------------------------\n");
     
-            System.out.println("classes.Quiz results saved successfully.");
+            System.out.println("Quiz results saved successfully.");
     
         } catch (IOException e) {
             System.out.println("Error writing to file: " + e.getMessage());
         }
+
+        String quizFile = quizID+".csv";
+        modifySpecificLine(quizFile,questions.size()+2,total_score);
+        generateBarChartFromLastLine(quizFile);
     }
     
     // Helper method to format the HashMap without curly braces
