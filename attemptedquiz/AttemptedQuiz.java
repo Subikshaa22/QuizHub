@@ -151,9 +151,11 @@ public class AttemptedQuiz extends Quiz {
             line = br.readLine();
             String[] header_line= line.split(",");
             int noOfQuestions = Integer.parseInt(header_line[8]);
+            System.out.println(noOfQuestions);
             int j=0;
 
             while (j<noOfQuestions) {
+                System.out.println(j);
                 line = br.readLine();
                 String[] values = line.split(",");
                 if (values.length < 3) {
@@ -165,18 +167,21 @@ public class AttemptedQuiz extends Quiz {
                 String text = values[0].trim();
                 int numOfOptions = Integer.parseInt(values[1].trim());  // Get the number of options
                 Map<Character, String> options = new HashMap<>();
-
+                System.out.println("got all options");
                 // Parsing options from the CSV (A, B, C, D, etc.)
-                for (int i = 0; i < numOfOptions; i++) {
-                    char optionLabel = (char) ('A' + i);  // 'a', 'b', 'c', ...
-                    options.put(optionLabel, values[1 + i * 2].trim());  // Text for each option
+                for (int im = 0; im < numOfOptions; im++) {
+                System.out.println("got all options");
+                    char optionLabel = (char) ('A' + im);  // 'a', 'b', 'c', ...
+                    System.out.println("got all options");
+                    options.put(optionLabel, values[1 + im * 2].trim());  // Text for each option
+                    System.out.println("got all options");
                 }
-
+                System.out.println("got all options");
                 // Correct option, assuming it's the last value
                 Character correctOption = values[2 + numOfOptions * 2].trim().charAt(0);
 
                 int marksForCorrect = 0, marksForWrong = 0;
-
+                System.out.println("marks");
                 try {
                     marksForCorrect = Integer.parseInt(values[2 + numOfOptions * 2 + 1].trim());
                     marksForWrong = Integer.parseInt(values[2 + numOfOptions * 2 + 2].trim());
@@ -185,8 +190,11 @@ public class AttemptedQuiz extends Quiz {
                     continue;
                 }
 
+                System.out.println("everything ready");
                 questions.add(new Question(text, options, correctOption, marksForCorrect, marksForWrong));
+                System.out.println("questions added");
                 j++;
+                System.out.println("did j++");
             }
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
@@ -213,7 +221,7 @@ public class AttemptedQuiz extends Quiz {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
-        System.out.println("Choose an option (A,B,C,D, ...), 'clear' to clear choice, 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
+        System.out.println("Choose an option (A,B,C,D, ...), 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
     }
     // Start the quiz
     public void startQuiz(String quizID, int duration) {
@@ -259,11 +267,7 @@ public class AttemptedQuiz extends Quiz {
                     timer.cancel(); // Cancel the timer manually
                     break;
                 default:
-                    if (input.equals("clear"))
-                    {
-                        chosenOptions.set(currentQuestionIndex, "-1");
-                    }
-                    else if (input.matches("[A-Za-z]")) {
+                    if (input.matches("[A-Za-z]")) {
                         chosenOptions.set(currentQuestionIndex, input);
                     } else {
                         try {
@@ -304,7 +308,7 @@ public class AttemptedQuiz extends Quiz {
                 if (parts[0].equals(quizID))
                 {
                     // Modify one of the terms (for example, changing the second term)
-                    parts[5] = Double.toString(quiz_avg);  // Modify the second term as an exampl
+                    parts[4] = Double.toString(quiz_avg);  // Modify the second term as an exampl
 
                 }
                 // Rebuild the modified line by joining the parts back with commas
@@ -333,7 +337,6 @@ public class AttemptedQuiz extends Quiz {
         }
     }
 
-    
     public static void modifyAvgInQuizFile(String fileName, double quiz_avg) {
         List<String> lines = new ArrayList<>();
         
@@ -498,28 +501,20 @@ public class AttemptedQuiz extends Quiz {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
     
             // Write Quiz ID and Attempt Time
-            writer.write("Quiz ID: " + quizID + "\nQuiz Attempted: " + new Date() + "\n");
+            writer.write("Quiz ID: " + quizID + " | Quiz Attempted: " + new Date() + "\n");
     
             // Loop through each question and write the result
             for (int i = 0; i < questions.size(); i++) {
                 Question question = questions.get(i);
                 String chosenOption = chosenOptions.get(i);
-                int score;
-                if (chosenOption.equals("-1"))
-                {
-                    score = 0;
-                }
-                else
-                {
-                    boolean isCorrect = question.getCorrectOption().toString().equals(chosenOption);
-                    score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
-                }
+                boolean isCorrect = question.getCorrectOption().toString().equals(chosenOption);
+                int score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
     
                 // Get the options and format them without curly braces
                 Map<Character, String> options = question.getOptions();
                 String formattedOptions = formatOptions(options);
     
-                writer.write(question.getText() + "," + formattedOptions + "\n" + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
+                writer.write(question.getText() + "," + formattedOptions + "," + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
                 total_score+=score;
             }
 
@@ -529,7 +524,6 @@ public class AttemptedQuiz extends Quiz {
             writer.write("------------------------------------------------\n");
     
             System.out.println("Quiz results saved successfully.");
-            System.out.println("Your total score: " + total_score);
     
         } catch (IOException e) {
             System.out.println("Error writing to file: " + e.getMessage());
@@ -611,8 +605,11 @@ public class AttemptedQuiz extends Quiz {
                 int duration = Integer.parseInt(attributes.get(7));
                 AttemptQuiz attemptQuiz = new AttemptQuiz(quizID, attributes.get(1), attributes.get(2), attributes.get(3), attributes.get(4), Double.parseDouble(attributes.get(5)), Double.parseDouble(attributes.get(6)), Integer.parseInt(attributes.get(7)), Integer.parseInt(attributes.get(8)));
                 QuizPlatform.currentUser.getAttempted().add(attemptQuiz);
+                System.out.println("added the quiz to current user");
                 loadQuestions(quizID+".csv");
+                System.out.println("loaded quiz");
                 startQuiz(quizID, duration);
+                System.out.println("started quiz");
             } else {
                 System.out.println("Invalid Quiz ID entered.");
             }
