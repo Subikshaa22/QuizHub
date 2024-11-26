@@ -84,7 +84,7 @@ public class AttemptedQuiz extends Quiz {
     public List<Quiz> displayQuizzes(String topicID) {
         String filePath = "PreviousQuizzez.csv";
         String line;
-        List<String> quizIDs = new ArrayList<>();
+        //List<String> quizIDs = new ArrayList<>();
         List<Quiz> quizzes = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -211,7 +211,7 @@ public class AttemptedQuiz extends Quiz {
         System.out.println("Choose an option (A,B,C,D, ...), 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
     }
     // Start the quiz
-    public void startQuiz(String quizID) {
+    public void startQuiz(String quizID, int duration) {
         Scanner scanner = new Scanner(System.in);
         Timer timer = new Timer();
         quizSubmitted = false; // Reset quiz submission flag
@@ -229,7 +229,7 @@ public class AttemptedQuiz extends Quiz {
                 }
                 timer.cancel(); // Stop the timer after submission
             }
-        }, 30 * 1000); // Schedule for 30 seconds (30000 ms)
+        }, duration * 60 * 1000); // duration is in mins, so converting to ms
     
         // Start the quiz loop
         while (!quizSubmitted) {
@@ -272,42 +272,71 @@ public class AttemptedQuiz extends Quiz {
         }
     
         // Save quiz results after submission
-        if (!quizSubmitted) {
-            quizSubmitted = true;
-            QuizPlatform quizPlatform = new QuizPlatform();
-            String email = quizPlatform.currentUser.getEmail();
-            saveQuizResults(email, quizID);
-        }
+        quizSubmitted = true;
+        QuizPlatform quizPlatform = new QuizPlatform();
+        String email = quizPlatform.currentUser.getEmail();
+        saveQuizResults(email, quizID);
     }
 
     public void saveQuizResults(String userEmail, String quizID) {
         String userFile = userEmail + "_quiz_results.txt";
-
+    
         // Open the file in append mode
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
-
+    
             // Write classes.Quiz ID and Attempt Time
+<<<<<<< Updated upstream
             writer.write("Quiz ID: " + quizID + " | Quiz Attempted: " + new Date() + "\n");
 
+=======
+            writer.write("classes.Quiz ID: " + quizID + " | classes.Quiz Attempted: " + new Date() + "\n");
+    
+>>>>>>> Stashed changes
             // Loop through each question and write the result
             for (int i = 0; i < questions.size(); i++) {
                 Question question = questions.get(i);
                 String chosenOption = chosenOptions.get(i);
                 boolean isCorrect = question.getCorrectOption().toString().equals(chosenOption);
                 int score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
-
-                writer.write(question.getText() + "," + question.getOptions() + "," + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
+    
+                // Get the options and format them without curly braces
+                Map<Character, String> options = question.getOptions();
+                String formattedOptions = formatOptions(options);
+    
+                writer.write(question.getText() + "," + formattedOptions + "," + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
             }
-
+    
             // Optionally, write a line to indicate the end of this particular quiz attempt
             writer.write("------------------------------------------------\n\n");
+<<<<<<< Updated upstream
 
             System.out.println("Quiz results saved successfully.");
 
+=======
+    
+            System.out.println("classes.Quiz results saved successfully.");
+    
+>>>>>>> Stashed changes
         } catch (IOException e) {
             System.out.println("Error writing to file: " + e.getMessage());
         }
     }
+    
+    // Helper method to format the HashMap without curly braces
+    private String formatOptions(Map<Character, String> options) {
+        StringBuilder formattedOptions = new StringBuilder();
+        
+        for (Map.Entry<Character, String> entry : options.entrySet()) {
+            formattedOptions.append(entry.getKey()).append(": ").append(entry.getValue()).append(", ");
+        }
+    
+        // Remove the last comma and space if present
+        if (formattedOptions.length() > 0) {
+            formattedOptions.setLength(formattedOptions.length() - 2);
+        }
+    
+        return formattedOptions.toString();
+    }    
 
     // Main function to select topic, quiz, and start the quiz
     public void main() {
@@ -361,10 +390,11 @@ public class AttemptedQuiz extends Quiz {
                 System.out.println("You selected Quiz ID: " + quizID);
                 String filePath = quizID+".csv";  // Path to your CSV file
                 List<String> attributes = getWordsFromFirstLine(filePath);
+                int duration = Integer.parseInt(attributes.get(7));
                 AttemptQuiz attemptQuiz = new AttemptQuiz(quizID, attributes.get(1), attributes.get(2), attributes.get(3), attributes.get(4), Double.parseDouble(attributes.get(5)), Double.parseDouble(attributes.get(6)), Integer.parseInt(attributes.get(7)), Integer.parseInt(attributes.get(8)));
                 QuizPlatform.currentUser.getAttempted().add(attemptQuiz);
                 loadQuestions(quizID+".csv");
-                startQuiz(quizID);
+                startQuiz(quizID, duration);
             } else {
                 System.out.println("Invalid Quiz ID entered.");
             }

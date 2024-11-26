@@ -1,5 +1,5 @@
-Quiz.Quiz ID: 2054283849 | Quiz.Quiz Attempted: Sat Nov 16 22:30:09 IST 2024
-am i ok?,{A=2, B=yes},A, A,4
-is kavya ok?,{A=1},B, A,-2
+classes.Quiz ID: 743204495 | classes.Quiz Attempted: Tue Nov 26 20:45:50 IST 2024
+Am i ok?,A: 2, B: yes,B, B,4
+is subi ok?,A: 2, B: no,-1, B,-2
 ------------------------------------------------
 
