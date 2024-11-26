@@ -2,13 +2,13 @@
 QuizHub is a command-line interface (CLI) platform developed as a course project, showcasing Object-Oriented Programming (OOP) principles in Java and C++. It provides a dynamic and user-friendly solution for creating, attempting, and managing quizzes. Designed for individual users, educators, and administrators, it enables seamless quiz creation, participation, and progress tracking while demonstrating the power of OOP concepts in real-world applications.
 
 ## Contributors
-- Ananya Vundavalli
-- Harshita Bansal
-- Kavya Gupta
-- Nainika Agrawal
-- Subikshaa Sakthivel
-- Talla Likitha Reddy
-- Vriddhi Agrawal
+- Ananya Vundavalli - IMT2023537
+- Harshita Bansal - IMT2023035
+- Kavya Gupta - IMT2023016
+- Nainika Agrawal - IMT2023034
+- Subikshaa Sakthivel - IMT2023020
+- Talla Likitha Reddy - IMT2023550
+- Vriddhi Agrawal - IMT2023611
 
 ## Goal :dart: 
 QuizHub aims to offer a streamlined and engaging platform for creating and managing quizzes through a command-line interface. It leverages Object-Oriented Programming to implement practical solutions. The project focuses on enhancing user experience for both learning and teaching scenarios.

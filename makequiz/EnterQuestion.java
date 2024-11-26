@@ -25,25 +25,25 @@ public class EnterQuestion {
     public void EnterQuestions() {
         boolean stopNow = false;
         while(!stopNow) {
-            // Add a new question
-            System.out.println("If you are done entering questions Enter Yes, else enter No");
-
-            String stop = scanner.nextLine().trim();
-            stop=stop.toLowerCase();
             if(refQuiz.getQuestions().size()<1){
-                System.out.println("There are no questions. Please add atleast one.");
-
-                stop="no";
-            }
-            if(stop.equals("yes")){
-                stopNow = true;
-            }
-            else if(stop.equals("no")){
-                stopNow=false;
                 EnterNewQuestion();
             }
-            else {
-                System.out.println("Invalid input. Please enter 'Yes' or 'No'.");
+            else{
+                // Add a new question
+                System.out.println("If you are done entering questions Enter Yes, else enter No");
+
+                String stop = scanner.nextLine().trim();
+                stop=stop.toLowerCase();
+                if(stop.equals("yes")){
+                    stopNow = true;
+                }
+                else if(stop.equals("no")){
+                    stopNow=false;
+                    EnterNewQuestion();
+                }
+                else {
+                    System.out.println("Invalid input. Please enter 'Yes' or 'No'.");
+                }
             }
         }
     }
