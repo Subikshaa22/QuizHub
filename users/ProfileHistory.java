@@ -9,7 +9,7 @@ import QuizClasses.Question;
 import QuizClasses.Quiz;
 
 public class ProfileHistory {
-    private User user;  // classes.User whose history we are tracking
+    private User user;  // User whose history we are tracking
     private Scanner scanner = new Scanner(System.in);
     private AttemptedQuiz attemptQuiz;
 
@@ -53,8 +53,8 @@ public class ProfileHistory {
 
         System.out.println("Quizzes Attempted:");
         for (AttemptQuiz quiz : quizzes) {
-            System.out.println("classes.Quiz Title: " + quiz.getName());
-            System.out.println("classes.Quiz ID: " + quiz.getID());
+            System.out.println("Quiz Title: " + quiz.getName());
+            System.out.println("Quiz ID: " + quiz.getID());
             System.out.println("Topic: " + quiz.getTopic());
             System.out.println("Date Attempted: " + quiz.getDateAttempted());
             System.out.println("Score: " + quiz.getTotalScore());
@@ -62,7 +62,7 @@ public class ProfileHistory {
             System.out.println("--------------");
         }
 
-        System.out.println("Enter the classes.Quiz ID you want to makequiz.review or type 'exit' to return:");
+        System.out.println("Enter the Quiz ID you want to makequiz.review or type 'exit' to return:");
         String input = scanner.nextLine();
 
         if (!input.equalsIgnoreCase("exit")) {
@@ -79,7 +79,7 @@ public class ProfileHistory {
             if (selectedQuiz != null) {
                 reviewQuiz(selectedQuiz);
             } else {
-                System.out.println("Invalid classes.Quiz ID.");
+                System.out.println("Invalid Quiz ID.");
             }
         }
     }
@@ -90,8 +90,8 @@ public class ProfileHistory {
 
         System.out.println("Created Quizzes:");
         for (Quiz quiz : createdQuizzes) {
-            System.out.println("classes.Quiz ID: " + quiz.getID());
-            System.out.println("classes.Quiz Title: " + quiz.getName());
+            System.out.println("Quiz ID: " + quiz.getID());
+            System.out.println("Quiz Title: " + quiz.getName());
             System.out.println("Topic: " + quiz.getTopic());
             System.out.println("Date Created: " + quiz.getDateOfCreation());
             System.out.println("Average Score: " + quiz.getAvgScore());
@@ -99,7 +99,7 @@ public class ProfileHistory {
             System.out.println("--------------");
         }
 
-        System.out.println("Enter the classes.Quiz ID you want to makequiz.review or type 'exit' to return:");
+        System.out.println("Enter the Quiz ID you want to makequiz.review or type 'exit' to return:");
         String input = scanner.nextLine();
 
         if (!input.equalsIgnoreCase("exit")) {
@@ -115,7 +115,7 @@ public class ProfileHistory {
             if (selectedQuiz != null) {
                 reviewCreatedQuiz(selectedQuiz);
             } else {
-                System.out.println("Invalid classes.Quiz ID.");
+                System.out.println("Invalid Quiz ID.");
             }
         }
     }
@@ -261,7 +261,7 @@ public class ProfileHistory {
 
     // Display question options
     private void displayQuestionOptions(Question question, String filterOption) {
-        System.out.println("classes.Question: " + question.getText());
+        System.out.println("Question: " + question.getText());
 
         if (filterOption.equals("incorrect") || filterOption.equals("unattempted")) {
             System.out.println("Options: [show answer] [next] [previous] [end makequiz.review] [filter]");
