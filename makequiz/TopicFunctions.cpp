@@ -138,3 +138,36 @@ extern "C" {
         return 1; // Successfully written the topic to the file 
     }
 }
+
+int main() {
+    try {
+        // Simulate calling Java_makequiz_MakeQuiz_displayTopics
+        cout << "Displaying topics from file:" << endl;
+        Java_makequiz_MakeQuiz_displayTopics(nullptr, nullptr);
+
+        // Simulate checking if a topic exists
+        string topicToCheck = "Math";
+        cout << "\nChecking if topic '" << topicToCheck << "' exists:" << endl;
+        
+        // Convert the topic to jstring 
+        JNIEnv* env = nullptr; 
+        jobject obj = nullptr;
+        jstring topicJString = env->NewStringUTF(topicToCheck.c_str());
+        
+        bool exists = Java_makequiz_MakeQuiz_checkIfTopicExists(env, obj, topicJString);
+        cout << (exists ? "Topic exists." : "Topic does not exist.") << endl;
+
+        // Simulate saving a topic to file
+        string topicToSave = "Physics";
+        jstring saveTopicJString = env->NewStringUTF(topicToSave.c_str());
+        cout << "\nSaving topic '" << topicToSave << "' to file..." << endl;
+        
+        Java_makequiz_MakeQuiz_saveTopic(env, obj, saveTopicJString);
+        cout << "Topic saved successfully!" << endl;
+
+    } catch (const exception& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
