@@ -29,15 +29,28 @@ public class ReviewQuiz {
 
     // Method to review and finalize the quiz.
     public void reviewQ(int quizID, String name,String topic ,String date) {
-        int time = 0; // Variable to hold the time for the quiz in minutes
+        
         int noOfQues = refQuiz.questions.size(); // Get the number of questions in the quiz
         // Set the number of questions in the quiz object
         refQuiz.setNumberOfQuestions(noOfQues);
 
         // Ask for time duration of the Quiz 
+        int time = 0; // Variable to hold the time for the quiz in minutes
         System.out.println("Enter the time duration for the quiz in minutes:");
-        time = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character left by nextInt()
+        
+        if (scanner.hasNextInt()) { // Check if input is an integer
+            time = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+            if (time <= 0) { // Ensure the time is positive
+                System.out.println("Invalid duration. Please enter a positive value.");
+                return; // Exit the method as invalid input was given
+            }
+        } else {
+            System.out.println("Invalid input. Please enter a numeric value for time.");
+            scanner.nextLine(); // Clear invalid input
+            return; // Exit the method
+        }
+
 
         int choice = -1; // Store menu choice 
         OUTER: while (choice != 4) {
@@ -46,8 +59,19 @@ public class ReviewQuiz {
             System.out.println("2. Save Quiz ");
             System.out.println("3. Discard Quiz ");
             System.out.print("Enter a number: ");
-            choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline char
+            
+            if (scanner.hasNextInt()) { // Check if input is an integer
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+                if (choice < 1 || choice > 3) { // Validate range
+                    System.out.println("Invalid choice, please enter a number between 1 and 3.");
+                    continue;
+                }
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Clear invalid input
+                continue;
+            }
 
             switch (choice) {
                 case 1: {
@@ -82,30 +106,26 @@ public class ReviewQuiz {
                     System.out.println("1. Yes ");
                     System.out.println("2. No ");
 
-                    // Check if int is entered 
-                    int dis = -1;
-                    boolean disValidInput = false;
-                    while (!disValidInput) {
-                        try {
-                            System.out.print("Enter a number: ");
-                            choice = scanner.nextInt();
-                            scanner.nextLine(); // Consume newline character 
-                            disValidInput = true; // If no exception, input is valid
-                        } catch (InputMismatchException e) {
-                            System.out.println("Invalid input. Please enter a number.");
-                            scanner.nextLine(); // Clear the invalid input
+                    int discardChoice = -1;
+                    System.out.print("Enter a number: ");
+                    if (scanner.hasNextInt()) {
+                        discardChoice = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+                        
+                        if (discardChoice == 1) {
+                            return; // Exit the method to discard the quiz
+                        } else if (discardChoice == 2) {
+                            continue OUTER; // Return to main menu
+                        } else {
+                            System.out.println("Invalid choice. Returning to main menu.");
                         }
+                    } else {
+                        System.out.println("Invalid input. Returning to main menu.");
+                        scanner.nextLine(); // Clear invalid input
                     }
-
-                    switch (dis) {
-                        case 1: {
-                            return; // Go back to continue learning main menu 
-                        }
-                        case 2: {
-                            continue OUTER; // Invalid input 
-                        }
-                    }
+                    break;
                 }
+
                 default:
                     System.out.println("Invalid choice");
                     break;
@@ -113,3 +133,4 @@ public class ReviewQuiz {
         }
     }
 }
+
