@@ -28,6 +28,8 @@ public class QuizPlatform {
             System.out.println("Select an option: ");
             System.out.println("1. Sign In");
             System.out.println("2. Sign Up");
+            System.out.println("3. Exit");
+
             System.out.print("Choice: ");
             int choice = scanner.nextInt();
             scanner.nextLine();  // Consume newline
@@ -39,6 +41,10 @@ public class QuizPlatform {
                 case 2 :
                     signUp(scanner);
                     break;
+                case 3:
+                    System.out.println("Exiting QuizHub...");
+                    scanner.close();
+                    return;
                 default :
                     System.out.println("Invalid choice. Please try again.");
             }
