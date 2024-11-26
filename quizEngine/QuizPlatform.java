@@ -24,7 +24,7 @@ public class QuizPlatform {
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("Hi, welcome to QuizMaster!");
+            System.out.println("Hi, welcome to QuizHub!");
             System.out.println("Select an option: ");
             System.out.println("1. Sign In");
             System.out.println("2. Sign Up");
@@ -100,11 +100,22 @@ public class QuizPlatform {
 
         System.out.print("Choose a username: ");
         String username = scanner.nextLine();
+
         System.out.print("Enter your email: ");
         String email = scanner.nextLine();
+
+        if(!User.validateEmail(email)){
+            System.out.println("Invalid Email format. Try again.");
+            return;
+        }
+
         System.out.print("Create a password: ");
         String password = scanner.nextLine();
-        
+
+        if(!User.validatePassword(password)){
+            System.out.println("Weak Password. Try again with atleast one uppercase letter, one lower case letter, any special character,one number and min 8 characters.");
+            return;
+        }
 
         if (users.stream().anyMatch(u -> u.getUsername().equals(username))) {
             System.out.println("Username already exists. Try again.");
