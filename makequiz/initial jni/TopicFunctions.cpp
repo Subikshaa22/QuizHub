@@ -90,23 +90,64 @@ void SaveTopic(string topic)
     outfile.close();
 }
 
-/* CHECK IF WORKING 
 int main()
 {
-    string topic; 
+    // Example predefined topics and checks (you can modify or expand these as needed)
+    string topicToCheck = "C++ Basics";
+    string topicToAdd = "Advanced C++";
+
+    cout << "--- Topic Management System ---\n";
     
-    cout << "displaying topics:"<<endl;
-    displayTopics();
+    // 1. Displaying topics from file
+    cout << "\nDisplaying Topics:\n";
+    try
+    {
+        displayTopics();
+    }
+    catch (const exception& e)
+    {
+        cout << e.what() << endl;
+    }
 
-    cout <<" enter topic"<<endl;
-    cin >> topic;
-    bool exist = CheckIfTopicExists(topic);
+    // 2. Checking if a specific topic exists
+    cout << "\nChecking if topic '" << topicToCheck << "' exists:\n";
+    try
+    {
+        bool exists = CheckIfTopicExists(topicToCheck);
+        if (exists)
+        {
+            cout << "Topic '" << topicToCheck << "' exists.\n";
+        }
+        else
+        {
+            cout << "Topic '" << topicToCheck << "' does not exist.\n";
+        }
+    }
+    catch (const exception& e)
+    {
+        cout << e.what() << endl;
+    }
 
-    cout << exist;
+    // 3. Adding a new topic if it doesn't already exist
+    cout << "\nTrying to add new topic '" << topicToAdd << "':\n";
+    try
+    {
+        bool exists = CheckIfTopicExists(topicToAdd);
+        if (exists)
+        {
+            cout << "Topic '" << topicToAdd << "' already exists.\n";
+        }
+        else
+        {
+            SaveTopic(topicToAdd);
+            cout << "Topic '" << topicToAdd << "' has been added.\n";
+        }
+    }
+    catch (const exception& e)
+    {
+        cout << e.what() << endl;
+    }
 
-    if(exist == false)
-    SaveTopic(topic);
-
+    cout << "\nExiting program.\n";
     return 0;
 }
-*/
