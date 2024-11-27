@@ -210,7 +210,7 @@ public class AttemptedQuiz extends Quiz {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
 
-        System.out.println("Choose an option (A,B,C,D, ...), 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
+        System.out.println("Choose an option (A,B,C,D, ...), 'clear to clear, 'n' for next, 'p' for previous, 's' to submit, or enter a question number to jump.");
     }
     // Start the quiz
     public void startQuiz(String quizID, int duration) {
@@ -256,6 +256,10 @@ public class AttemptedQuiz extends Quiz {
                     timer.cancel(); // Cancel the timer manually
                     break;
                 default:
+                    if (input.equals("clear"))
+                    {
+                        chosenOptions.set(currentQuestionIndex, "-1");
+                    }
                     if (input.matches("[A-Za-z]")) {
                         chosenOptions.set(currentQuestionIndex, input);
                     } else {
@@ -476,7 +480,7 @@ public class AttemptedQuiz extends Quiz {
             // Write the modified lines back to the file
             Files.write(Paths.get(quizFile), lines, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     
-            System.out.println("Score appended to line " + lineNumber + " successfully.");
+            System.out.println("Score appended successfully.");
         } catch (IOException e) {
             System.out.println("Error accessing file: " + e.getMessage());
         }
@@ -490,20 +494,28 @@ public class AttemptedQuiz extends Quiz {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(userFile, true))) {
     
             // Write Quiz ID and Attempt Time
-            writer.write("Quiz ID: " + quizID + " | Quiz Attempted: " + new Date() + "\n");
+            writer.write("Quiz ID: " + quizID + "\nQuiz Attempted: " + new Date() + "\n");
     
             // Loop through each question and write the result
             for (int i = 0; i < questions.size(); i++) {
                 Question question = questions.get(i);
                 String chosenOption = chosenOptions.get(i);
-                boolean isCorrect = question.getCorrectOption().toString().equals(chosenOption);
-                int score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
+                int score;
+                if (chosenOption.equals("-1"))
+                {
+                    score = 0;
+                }
+                else
+                {
+                    boolean isCorrect = question.getCorrectOption().toString().equals(chosenOption);
+                    score = isCorrect ? question.getMarksForCorrect() : question.getMarksForWrong();
+                }
     
                 // Get the options and format them without curly braces
                 Map<Character, String> options = question.getOptions();
                 String formattedOptions = formatOptions(options);
     
-                writer.write(question.getText() + "," + formattedOptions + "," + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
+                writer.write(question.getText() + "," + formattedOptions + "\n" + chosenOption + ", " + question.getCorrectOption() + "," + score + "\n");
                 total_score+=score;
             }
 
