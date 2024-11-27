@@ -151,11 +151,9 @@ public class AttemptedQuiz extends Quiz {
             line = br.readLine();
             String[] header_line= line.split(",");
             int noOfQuestions = Integer.parseInt(header_line[8]);
-            System.out.println(noOfQuestions);
             int j=0;
 
             while (j<noOfQuestions) {
-                System.out.println(j);
                 line = br.readLine();
                 String[] values = line.split(",");
                 if (values.length < 3) {
@@ -167,21 +165,15 @@ public class AttemptedQuiz extends Quiz {
                 String text = values[0].trim();
                 int numOfOptions = Integer.parseInt(values[1].trim());  // Get the number of options
                 Map<Character, String> options = new HashMap<>();
-                System.out.println("got all options");
                 // Parsing options from the CSV (A, B, C, D, etc.)
                 for (int im = 0; im < numOfOptions; im++) {
-                System.out.println("got all options");
                     char optionLabel = (char) ('A' + im);  // 'a', 'b', 'c', ...
-                    System.out.println("got all options");
                     options.put(optionLabel, values[1 + im * 2].trim());  // Text for each option
-                    System.out.println("got all options");
                 }
-                System.out.println("got all options");
                 // Correct option, assuming it's the last value
                 Character correctOption = values[2 + numOfOptions * 2].trim().charAt(0);
 
                 int marksForCorrect = 0, marksForWrong = 0;
-                System.out.println("marks");
                 try {
                     marksForCorrect = Integer.parseInt(values[2 + numOfOptions * 2 + 1].trim());
                     marksForWrong = Integer.parseInt(values[2 + numOfOptions * 2 + 2].trim());
@@ -190,11 +182,8 @@ public class AttemptedQuiz extends Quiz {
                     continue;
                 }
 
-                System.out.println("everything ready");
                 questions.add(new Question(text, options, correctOption, marksForCorrect, marksForWrong));
-                System.out.println("questions added");
                 j++;
-                System.out.println("did j++");
             }
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
@@ -453,7 +442,7 @@ public class AttemptedQuiz extends Quiz {
     public static void appendIntegerToFile(String fileName, int value) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             // Add a new line and write the integer
-            writer.newLine();
+            //writer.newLine();
             writer.write(String.valueOf(value));
     
             System.out.println("Integer added to a new line successfully.");
@@ -605,11 +594,8 @@ public class AttemptedQuiz extends Quiz {
                 int duration = Integer.parseInt(attributes.get(7));
                 AttemptQuiz attemptQuiz = new AttemptQuiz(quizID, attributes.get(1), attributes.get(2), attributes.get(3), attributes.get(4), Double.parseDouble(attributes.get(5)), Double.parseDouble(attributes.get(6)), Integer.parseInt(attributes.get(7)), Integer.parseInt(attributes.get(8)));
                 QuizPlatform.currentUser.getAttempted().add(attemptQuiz);
-                System.out.println("added the quiz to current user");
                 loadQuestions(quizID+".csv");
-                System.out.println("loaded quiz");
                 startQuiz(quizID, duration);
-                System.out.println("started quiz");
             } else {
                 System.out.println("Invalid Quiz ID entered.");
             }
