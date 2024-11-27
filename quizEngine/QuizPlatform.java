@@ -197,7 +197,8 @@ public class QuizPlatform {
         MakeQuiz makeQuiz = new MakeQuiz();
 
         switch(choice2) {
-            case 1 : makeQuiz.main(new String[0]);
+            case 1 : String[] emails={currentUser.getEmail()};
+                     makeQuiz.main(emails);
                      break;
             case 2 : attemptQuiz.main();
                      break;

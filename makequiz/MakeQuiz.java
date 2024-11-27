@@ -44,17 +44,18 @@ public class MakeQuiz {
     }
 
     // Method to review the quiz before finalizing it.
-    public static void callReview(MakeQuiz makeQuizInstance, String quizID, String name, String topic, String date) {
+    public static void callReview(MakeQuiz makeQuizInstance, String quizID, String name, String topic, String date, String email) {
         // Access newQuiz through makeQuizInstance instance and the functions from
         // reviewQuiz class
         ReviewQuiz callReview = new ReviewQuiz();
         callReview.setQobject(makeQuizInstance.newQuiz);
         // Convert the id to a integer and send it to function
         int quizIdInt = Integer.parseInt(quizID);
-        callReview.reviewQ(quizIdInt, name, topic, date);
+        callReview.reviewQ(quizIdInt, name, topic, date, email);
     }
 
     public static void main(String[] args) {
+        String email = args[0];
         String topic = ""; // Variable to store the topic of the quiz
 
         // Outer loop for selecting or creating a topic
@@ -181,7 +182,7 @@ public class MakeQuiz {
                 }
                 case 3: {
                     // Review the quiz and save/discard it
-                    callReview(makeQuizInstance, quizID, name, topic, dateCreated);
+                    callReview(makeQuizInstance, quizID, name, topic, dateCreated, email);
                     break COUTER;
                 }
                 default:

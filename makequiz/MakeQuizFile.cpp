@@ -133,6 +133,7 @@ extern "C" {
         // Get getters from the Java object
         jmethodID getID = env->GetMethodID(quizClass, "getID", "()Ljava/lang/String;");
         jmethodID getName= env->GetMethodID(quizClass, "getName", "()Ljava/lang/String;");
+        jmethodID getEmail = env->GetMethodID(quizClass, "getUsername", "()Ljava/lang/String;");
         jmethodID getTopic = env->GetMethodID(quizClass, "getTopic", "()Ljava/lang/String;");
         jmethodID getDate= env->GetMethodID(quizClass, "getDateOfCreation", "()Ljava/lang/String;");
         jmethodID getAvgScore = env->GetMethodID(quizClass, "getAvgScore", "()D");
@@ -140,8 +141,9 @@ extern "C" {
         jmethodID getTimeAllotted= env->GetMethodID(quizClass, "getTimeAllotted", "()I");
         jmethodID getNumberOfQuestions = env->GetMethodID(quizClass, "getNumberOfQuestions", "()I");
 
+
         // Ensure the getter methods exist 
-        if (!getID || !getName || !getTopic || !getDate || !getAvgScore || !getAvgTime || !getTimeAllotted || !getNumberOfQuestions) {
+        if (!getID || !getEmail || !getName || !getTopic || !getDate || !getAvgScore || !getAvgTime || !getTimeAllotted || !getNumberOfQuestions) {
             cerr << "Error: Could not find necessary getter methods for newQuiz" << endl;
             return -1;  // Return error code if any method is missing
         }
@@ -158,6 +160,7 @@ extern "C" {
 
 
         jstring name = (jstring)env->CallObjectMethod(newQuiz, getName);
+        jstring email= (jstring)env->CallObjectMethod(newQuiz, getEmail);
         jstring topic = (jstring)env->CallObjectMethod(newQuiz, getTopic);
         jstring dateOfCreation = (jstring)env->CallObjectMethod(newQuiz, getDate);
         jdouble avgScore = env->CallDoubleMethod(newQuiz, getAvgScore);
@@ -167,11 +170,12 @@ extern "C" {
 
         // Convert Java strings to C++ strings
         const char* nameStr = env->GetStringUTFChars(name, 0);
+         const char* emailStr = env->GetStringUTFChars(email, 0);
         const char* topicStr = env->GetStringUTFChars(topic, 0);
         const char* dateStr = env->GetStringUTFChars(dateOfCreation, 0);
 
         // Write to file
-        outfile << id << "," << nameStr << "," << topicStr << "," << dateStr << ","
+        outfile << id << "," << nameStr << "," << topicStr << "," << emailStr << "," << dateStr << ","
                 << avgScore << "," << avgTime << "," << timeAllotted << ","
                 << numberOfQuestions << "," << endl;
 
