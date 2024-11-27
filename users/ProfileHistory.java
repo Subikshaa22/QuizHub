@@ -35,9 +35,6 @@ public class ProfileHistory {
             case 2:
                 displayCreatedQuizzes();
                 break;
-            //case 3:
-                //displayQuizResultsHistory();  // New option for quiz results history
-                //break;
             default:
                 System.out.println("Invalid choice. Returning to main menu.");
                 return;
@@ -59,17 +56,6 @@ public class ProfileHistory {
                 .reversed());
     
         System.out.println("Quizzes Attempted:");
-        /* 
-        for (AttemptQuiz quiz : quizzes) {
-            System.out.println("Quiz Title: " + quiz.getName());
-            System.out.println("Quiz ID: " + quiz.getID());
-            System.out.println("Topic: " + quiz.getTopic());
-            System.out.println("Date Attempted: " + quiz.getDateAttempted());
-            System.out.println("Score: " + quiz.getTotalScore());
-            System.out.println("Time Taken: " + quiz.getTime() + " mins");
-            System.out.println("--------------");
-        }
-        */
     
         System.out.println("Available Quiz IDs:");
         List<String> quizIds = extractQuizIdsFromFile();
@@ -89,28 +75,12 @@ public class ProfileHistory {
                     break;
                 }
             }
-            //if (isValidId) {
-                // Proceed with finding the quiz by ID and reviewing
-                /*AttemptQuiz selectedQuiz = null;
-                for (AttemptQuiz q : quizzes) {
-                    if (String.valueOf(q.getID()).trim().equals(input)) {
-                        selectedQuiz = q;
-                        break;
-                    }
-                }
-                if (selectedQuiz != null) {
-                    reviewQuiz(selectedQuiz); // Proceed to review the selected quiz
-                } else {
-                    System.out.println("Here");
-                    System.out.println("Invalid Quiz ID.");
-                }
-            }
-                */
+
             if (!isValidId) {
                 System.out.println("Invalid Quiz ID.");
             }
             else{
-                displayQuizResultsHistory();
+                displayFilterOptions(input);
             }
         }
     }
@@ -201,16 +171,7 @@ public class ProfileHistory {
         List<Quiz> createdQuizzes = user.getQuizManager().getQuizzesByUser(user.getUsername()); // Retrieve quizzes created by the user
 
         System.out.println("Created Quizzes:");
-        /*for (Quiz quiz : createdQuizzes) {
-            System.out.println("Quiz ID: " + quiz.getID());
-            System.out.println("Quiz Title: " + quiz.getName());
-            System.out.println("Topic: " + quiz.getTopic());
-            System.out.println("Date Created: " + quiz.getDateOfCreation());
-            System.out.println("Average Score: " + quiz.getAvgScore());
-            System.out.println("Average Time: " + quiz.getAvgTime() + " mins");
-            System.out.println("--------------");
-        }
-            */
+        
         List<String> createdIds = getListOfUserCreated(user.getEmail());
         List<Quiz> quizzes = displayQuizzes(user.getEmail());
         for (Quiz quiz : quizzes) {
@@ -239,16 +200,15 @@ public class ProfileHistory {
     }
 
     // Display quiz results history by reading from file
-    private void displayQuizResultsHistory() {
+    private List<String> displayQuizResultsHistory() {
         String fileName = user.getEmail() + "_quiz_results.txt";  // Construct the file name
         List<String> quizDetails = readQuizResults(fileName);
+        List<String> currentQuizDetails = new ArrayList<>();
 
         if (quizDetails.isEmpty()) {
             System.out.println("No quiz results found for " + user.getEmail());
         } else {
             String currentQuizId = "";
-            List<String> currentQuizDetails = new ArrayList<>();
-
             for (String line : quizDetails) {
                 // Check for quiz ID and attempt date (e.g., "classes.Quiz ID: 743204495 | classes.Quiz Attempted: Tue Nov 26 20:45:50 IST 2024")
                 if (line.startsWith("Quiz ID:")) {
@@ -261,12 +221,8 @@ public class ProfileHistory {
                 }
                 currentQuizDetails.add(line);  // Add current line to the quiz details
             }
-
-            // Print the last quiz details if any
-            if (!currentQuizDetails.isEmpty()) {
-                printQuizDetails(currentQuizId, currentQuizDetails);
-            }
         }
+        return currentQuizDetails;
     }
 
     // Read quiz results from the file
@@ -283,7 +239,282 @@ public class ProfileHistory {
         return quizDetails;
     }
 
-    // Print quiz details
+    // Filter wrong questions
+    private void printWrong(String quizId, List<String> quizDetails) {
+        System.out.println("Quiz ID: " + quizId);
+        int found = 0;
+        int j = 0;
+        // Print the quiz info (date, attempt, etc.)
+        for (String detail : quizDetails) {
+            if (detail.startsWith("Quiz Attempted:")) {
+                System.out.println("Date Attempted: " + detail.split(":")[1].trim());
+            } 
+            else if (detail.contains("?")) {
+                String[] question = detail.split(",");
+                String line = quizDetails.get(j+1);
+                String[] answers = line.split(",");
+
+                if (answers[0].trim().toLowerCase().equals(answers[1].trim().toLowerCase()) || answers[0].trim().equals("-1"))
+                {
+                    j++;
+                    continue;
+                }
+                else
+                {
+                    found = 1;
+                    System.out.print("Question: " );
+                    for (String que : question) {
+                        System.out.println(que.trim());
+                    }
+                }
+            }
+
+            else if (detail.startsWith("Quiz ID:"))
+            {
+                j++;
+                continue;
+            }
+
+            else if (detail.equals("------------------------------------------------"))
+            {
+                break;
+            }
+
+            else if (detail.startsWith("Total Score :"))
+            {
+                if (found == 0)
+                {
+                    System.out.println("There are no incorrect answers.");
+                }
+                System.out.println("Total Score: " + detail.split(":")[1].trim());
+            }
+
+            else{
+                    String[] answers = detail.split(",");
+                    if (answers[0].trim().toLowerCase().equals(answers[1].trim().toLowerCase()) || answers[0].trim().equals("-1"))
+                    {
+                        j++;
+                        continue;
+                    }
+
+                    else
+                    {
+                        int i=0;
+                        for (String answer : answers) {
+                            if (i>=3)
+                            {
+                                break;
+                            }
+                            if (i==0) {
+                                if (answer.equals("-1")){
+                                    System.out.println("Not attempted");
+                                }
+                                else {
+                                    System.out.println("Your answer: " + answer.trim());
+                                } 
+                            }
+                            else if (i==1) {
+                                System.out.println("Correct answer: " + answer.trim());
+                            }
+                            else {
+                                System.out.println("Marks scored: " + answer.trim());
+                            }
+                            i++;
+                        }
+                    }
+                
+                }
+            j++;
+        }
+
+        System.out.println("--------------");
+    }
+
+    // Filter wrong questions
+    private void printCorrect(String quizId, List<String> quizDetails) {
+        System.out.println("Quiz ID: " + quizId);
+
+        int found = 0;
+        int j = 0;
+        // Print the quiz info (date, attempt, etc.)
+        for (String detail : quizDetails) {
+            if (detail.startsWith("Quiz Attempted:")) {
+                System.out.println("Date Attempted: " + detail.split(":")[1].trim());
+            } 
+            else if (detail.contains("?")) {
+                String[] question = detail.split(",");
+                String line = quizDetails.get(j+1);
+                String[] answers = line.split(",");
+
+                if (!answers[0].trim().toLowerCase().equals(answers[1].trim().toLowerCase()) || answers[0].trim().equals("-1"))
+                {
+                    j++;
+                    continue;
+                }
+                else
+                {
+                    found = 1;
+                    System.out.print("Question: " );
+                    for (String que : question) {
+                        System.out.println(que.trim());
+                    }
+                }
+            }
+
+            else if (detail.startsWith("Quiz ID:"))
+            {
+                j++;
+                continue;
+            }
+
+            else if (detail.equals("------------------------------------------------"))
+            {
+                break;
+            }
+
+            else if (detail.startsWith("Total Score :"))
+            {
+                if (found == 0)
+                {
+                    System.out.println("There are no correct answers.");
+                }
+                System.out.println("Total Score: " + detail.split(":")[1].trim());
+            }
+
+            else{
+                    String[] answers = detail.split(",");
+                    if (!answers[0].trim().toLowerCase().equals(answers[1].trim().toLowerCase()))
+                    {
+                        j++;
+                        continue;
+                    }
+
+                    else
+                    {
+                        int i=0;
+                        for (String answer : answers) {
+                            if (i>=3)
+                            {
+                                break;
+                            }
+                            if (i==0) {
+                                if (answer.equals("-1")){
+                                    System.out.println("Not attempted");
+                                }
+                                else {
+                                    System.out.println("Your answer: " + answer.trim());
+                                } 
+                            }
+                            else if (i==1) {
+                                System.out.println("Correct answer: " + answer.trim());
+                            }
+                            else {
+                                System.out.println("Marks scored: " + answer.trim());
+                            }
+                            i++;
+                        }
+                    }
+                
+                }
+            j++;
+        }
+
+        System.out.println("--------------");
+    }
+
+    // Filter wrong questions
+    private void printUnattempted(String quizId, List<String> quizDetails) {
+        System.out.println("Quiz ID: " + quizId);
+
+        int found = 0;
+        int j = 0;
+        // Print the quiz info (date, attempt, etc.)
+        for (String detail : quizDetails) {
+            if (detail.startsWith("Quiz Attempted:")) {
+                System.out.println("Date Attempted: " + detail.split(":")[1].trim());
+            } 
+            else if (detail.contains("?")) {
+                String[] question = detail.split(",");
+                String line = quizDetails.get(j+1);
+                String[] answers = line.split(",");
+
+                if (answers[0].trim().equals("-1"))
+                {
+                    found = 1;
+                    System.out.print("Question: " );
+                    for (String que : question) {
+                        System.out.println(que.trim());
+                    }
+                }
+                else
+                {
+                    j++;
+                    continue;
+                }
+            }
+
+            else if (detail.startsWith("Quiz ID:"))
+            {
+                j++;
+                continue;
+            }
+
+            else if (detail.equals("------------------------------------------------"))
+            {
+                break;
+            }
+
+            else if (detail.startsWith("Total Score :"))
+            {
+                if (found == 0)
+                {
+                    System.out.println("There are no unattempted questions.");
+                }
+                System.out.println("Total Score: " + detail.split(":")[1].trim());
+            }
+
+            else{
+                    String[] answers = detail.split(",");
+                    if (!answers[0].trim().equals("-1"))
+                    {
+                        j++;
+                        continue;
+                    }
+
+                    else
+                    {
+                        int i=0;
+                        for (String answer : answers) {
+                            if (i>=3)
+                            {
+                                break;
+                            }
+                            if (i==0) {
+                                if (answer.equals("-1")){
+                                    System.out.println("Not attempted");
+                                }
+                                else {
+                                    System.out.println("Your answer: " + answer.trim());
+                                } 
+                            }
+                            else if (i==1) {
+                                System.out.println("Correct answer: " + answer.trim());
+                            }
+                            else {
+                                System.out.println("Marks scored: " + answer.trim());
+                            }
+                            i++;
+                        }
+                    }
+                
+                }
+            j++;
+        }
+
+        System.out.println("--------------");
+    }
+
+    // Print all questions
     private void printQuizDetails(String quizId, List<String> quizDetails) {
         System.out.println("Quiz ID: " + quizId);
 
@@ -346,17 +577,6 @@ public class ProfileHistory {
         System.out.println("--------------");
     }
 
-    // Review a selected quiz (for attempted quizzes)
-    /*private void reviewQuiz(AttemptQuiz quiz) {
-        System.out.println("Options: [review] or [back]");
-        String option = scanner.nextLine();
-
-        if (option.equalsIgnoreCase("review")) {
-            displayFilterOptions(quiz);
-        }
-    }
-        */
-
     private void displayQuestion(String fileName)
     {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -399,139 +619,34 @@ public class ProfileHistory {
         }
     }
 
-    // Review a selected quiz (for created quizzes)
-    /*private void reviewCreatedQuiz(String filepath) {
-        List<Question> questions = quiz.getQuestions();
-        int index = 0;
-        while (index >= 0 && index < questions.size()) {
-            Question question = questions.get(index);
-            System.out.println("Question: " + question.getQuestionText());
-            System.out.println("Options:");
-            for (Map.Entry<Character, String> entry : question.getOptions().entrySet()) {
-                System.out.println(entry.getKey() + ". " + entry.getValue());
-            }
-            System.out.println("Your Answer: " + (question.getAnswer() != null ? question.getAnswer() : "Not answered"));
-            System.out.println("Correct Answer: " + question.getCorrectOption());
-
-            String action = scanner.nextLine();
-
-            switch (action.toLowerCase()) {
-                case "next":
-                    if (index < questions.size() - 1) {
-                        index++;
-                    } else {
-                        System.out.println("This is the last question.");
-                    }
-                    break;
-                case "previous":
-                    if (index > 0) {
-                        index--;
-                    } else {
-                        System.out.println("This is the first question.");
-                    }
-                    break;
-                case "end review":
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }
-    }*/
 
     // Display filter options for reviewing questions
-    private void displayFilterOptions(AttemptQuiz quiz) {
-        System.out.println("Filter by: [incorrect] [unattempted] [all]");
+    private void displayFilterOptions(String quizId) {
+        System.out.println("Filter by: [incorrect] {correct} [unattempted] [all]");
         String option = scanner.nextLine();
 
         switch (option.toLowerCase()) {
             case "incorrect":
-                reviewQuestions(quiz, getIncorrectQuestions(quiz), "Incorrect");
+                List<String> quizDetails = displayQuizResultsHistory();
+                printWrong(quizId, quizDetails);
+                break;
+            case "correct":
+                quizDetails = displayQuizResultsHistory();
+                printCorrect(quizId, quizDetails);
                 break;
             case "unattempted":
-                reviewQuestions(quiz, getUnattemptedQuestions(quiz), "Unattempted");
+                quizDetails = displayQuizResultsHistory();
+                printUnattempted(quizId, quizDetails);
                 break;
             case "all":
-                reviewQuestions(quiz, quiz.getQuestions(), "All");
+                quizDetails = displayQuizResultsHistory();
+                printQuizDetails(quizId, quizDetails);
                 break;
             default:
                 System.out.println("Invalid option.");
         }
     }
 
-    // Get incorrect questions
-    private List<Question> getIncorrectQuestions(AttemptQuiz quiz) {
-        List<Question> incorrectQuestions = new ArrayList<>();
-        for (Question question : quiz.getQuestions()) {
-            if (!question.getAnswer().equals(question.getCorrectOption())) {
-                incorrectQuestions.add(question);
-            }
-        }
-        return incorrectQuestions;
-    }
-
-    // Get unattempted questions
-    private List<Question> getUnattemptedQuestions(AttemptQuiz quiz) {
-        List<Question> unattemptedQuestions = new ArrayList<>();
-        for (Question question : quiz.getQuestions()) {
-            if (question.getAnswer() == null) {
-                unattemptedQuestions.add(question);
-            }
-        }
-        return unattemptedQuestions;
-    }
-
-    // Review filtered questions
-    private void reviewQuestions(AttemptQuiz quiz, List<Question> questions, String filterOption) {
-        System.out.println("Reviewing " + filterOption + " questions.");
-
-        int index = 0;
-        while (index >= 0 && index < questions.size()) {
-            Question question = questions.get(index);
-            System.out.println("Question: " + question.getQuestionText());
-            System.out.println("Your Answer: " + question.getAnswer());
-            System.out.println("Correct Answer: " + question.getCorrectOption());
-
-            System.out.println("Options: [next] [previous] [end review]");
-            String action = scanner.nextLine();
-
-            switch (action.toLowerCase()) {
-                case "next":
-                    if (index < questions.size() - 1) {
-                        index++;
-                    } else {
-                        System.out.println("This is the last question.");
-                    }
-                    break;
-                case "previous":
-                    if (index > 0) {
-                        index--;
-                    } else {
-                        System.out.println("This is the first question.");
-                    }
-                    break;
-                case "end review":
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }
-    }
-    private void displayQuestionOptions(Question question, String filterOption) {
-        System.out.println("Question: " + question.getQuestionText());
-        System.out.println("Options: ");
-        for (int i = 0; i < question.getOptions().size(); i++) {
-            System.out.println((char) ('A' + i) + ": " + question.getOptions().get(i));
-        }
-        System.out.println("Filter: " + filterOption);
-        System.out.println("Available Actions: [show answer] [next] [previous] [end review]");
-    }
-
-    private void showAnswer(Question question, AttemptQuiz quiz, String filterOption) {
-        System.out.println("Correct Answer: " + question.getCorrectOption());
-        System.out.println("Your Answer: " + quiz.getChosenOptions().get(quiz.getQuestions().indexOf(question)));
-        System.out.println("Score: " + question.getScore());
-        System.out.println("Filter: " + filterOption);
-    }
 }
 
 /*
