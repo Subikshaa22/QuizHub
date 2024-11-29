@@ -127,6 +127,8 @@ javac -h bin/makequiz makequiz/ReviewQuiz.java
 ```
 
 Now, compile the C++ source files into a shared library using the following command:
+
+
 Linux:
 ```sh
 g++ -shared -fpic -o libmylib.so makequiz/TopicFunctions.cpp makequiz/MakeQuizFile.cpp makequiz/getCurrentDate.cpp -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/linux" -I"bin/makequiz"
