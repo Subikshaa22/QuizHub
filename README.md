@@ -126,9 +126,15 @@ Similarly, generate the JNI header for `ReviewQuiz.java`:
 javac -h bin/makequiz makequiz/ReviewQuiz.java
 ```
 
-Now, compile the C++ source files into a shared library (`libmylib.so`) using the following command:
+Now, compile the C++ source files into a shared library using the following command:
+Linux:
 ```sh
 g++ -shared -fpic -o libmylib.so makequiz/TopicFunctions.cpp makequiz/MakeQuizFile.cpp makequiz/getCurrentDate.cpp -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/linux" -I"bin/makequiz"
+```
+
+Windows:
+```sh
+g++ -shared -o libmylib.dll makequiz/TopicFunctions.cpp makequiz/MakeQuizFile.cpp makequiz/getCurrentDate.cpp -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/win32" -I"bin/makequiz"
 ```
 
 After successfully compiling the shared library, you can run your Java application. Use the following command to run the application and link the JNI library:
