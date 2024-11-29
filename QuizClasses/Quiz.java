@@ -140,7 +140,6 @@ public abstract class Quiz {
         return "ID: " + ID + ", Name: " + name + ", Topic: " + topic + 
                ", Date of Creation: " + dateOfCreation + 
                ", Average Score: " + avgScore + " marks" + 
-               ", Average Time Taken: " + avgTime + " mins" + 
                ", Time Allotted: " + timeAllotted + " mins";
     }
     

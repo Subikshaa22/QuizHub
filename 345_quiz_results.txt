@@ -1,5 +1,0 @@
-Quiz ID: 2054283849 | Quiz Attempted: Tue Nov 26 22:39:10 IST 2024
-am i ok?,A: 2, B: yes,B, A,-1
-is kavya ok?,A: 1,B, A,-2
-Total Score : -3
-------------------------------------------------
